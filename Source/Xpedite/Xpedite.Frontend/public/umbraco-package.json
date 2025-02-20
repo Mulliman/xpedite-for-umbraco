@@ -1,0 +1,15 @@
+{
+    "$schema": "./../umbraco-package-schema.json",
+    "id": "xpedite.frontend",
+    "name": "Xpedite.Frontend",
+    "allowPackageTelemetry": true,
+    "version": "0.0.0",
+    "extensions": [
+        {
+          "name": "xpedite.Frontend EntryPoint",
+          "alias": "xpedite.Frontend.entrypoint",
+          "type": "entryPoint",
+          "js": "/app_plugins/Xpedite.Frontend/dist.js"
+        }
+      ]
+}

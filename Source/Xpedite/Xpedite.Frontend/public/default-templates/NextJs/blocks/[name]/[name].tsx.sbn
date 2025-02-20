@@ -1,0 +1,30 @@
+import { Block } from "@/umbraco/types";
+
+import './{{name.value}}.css'
+
+export type {{name.pascal_case}}ContentProps = { {{ for prop in properties }}
+    {{ prop.alias }}?: any,{{ end }}
+}
+
+export type {{name.pascal_case}}SettingsProps = { {{ for setting in settings }}
+    {{ setting.alias }}?: any,{{ end }}
+}
+
+type {{name.pascal_case}}Props = Block<{{name.pascal_case}}Props, {{name.pascal_case}}SettingsProps>;
+
+export default function {{ name.pascal_case }} ({ content, settings } : {{name.pascal_case}}Props) {
+    const { {{ for prop in properties }}{{ prop.alias }},{{ end }} } = content?.properties || {};
+    {{ if settings.size > 0 }} const { {{ for setting in settings }}{{ setting.alias }},{{ end }} } = setting?.properties || {};
+    {{ end }}
+
+    return (
+        <div className="block-{{ name.kebab_case }}">
+            <div className="block-name">Block: {{ name.pascal_case }}</div>
+
+            {{ for renderedProperty in rendered_properties }}{{ renderedProperty }}
+            {{ end }}
+            {{ for renderedSetting in rendered_settings }}{{ renderedSetting }}
+            {{ end }}
+        </div>
+    )
+}

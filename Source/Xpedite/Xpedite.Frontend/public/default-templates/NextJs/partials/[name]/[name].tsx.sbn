@@ -1,0 +1,19 @@
+import { TypedUmbracoNode } from "@/umbraco/types";
+
+import './{{name.value}}.css'
+
+export type {{name.pascal_case}}Props = { {{ for prop in properties }}
+    {{ prop.alias }}?: any,{{ end }}
+}
+
+export default function {{ name.pascal_case }} (item : TypedUmbracoNode<{{name.pascal_case}}Props>) {
+    const { {{ for prop in properties }}{{ prop.alias }},{{ end }} } = item?.properties;
+
+    return (
+        <div className="partial-{{ name.kebab_case }}">
+            <div className="partial-name">Partial: {{ name.pascal_case }}</div>
+    {{ for renderedProperty in rendered_properties }}
+        {{ renderedProperty }}{{ end }}
+        </div>
+    )
+}

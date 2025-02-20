@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>XPEDITE</PackageId>
+		<Title>XPEDITE</Title>
+		<Authors>Sam Mullins</Authors>
+		<Product>XPEDITE</Product>
+		<PackageIcon>Logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<IncludeSymbols>False</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageOutputPath>$(OutputPath)</PackageOutputPath>
+		<Version>15.0.0</Version>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Update="xpedite-settings.schema.json">
+			<Pack>true</Pack>
+			<PackagePath>schemas/</PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\..\Brand\Logo.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms" Version="[15.2.0,)" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="ui\**" Pack="true" PackagePath="content\ui" />
+		<None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\XPedite.Generator\Xpedite.Generator.csproj" />
+	</ItemGroup>
+</Project>

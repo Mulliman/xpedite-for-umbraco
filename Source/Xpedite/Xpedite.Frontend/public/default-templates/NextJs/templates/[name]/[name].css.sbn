@@ -1,0 +1,8 @@
+.template-{{ name.kebab_case }} {
+    border: 2px solid #713973;
+}
+
+.template-{{ name.kebab_case }}-name {
+    background: #713973;
+    color: white;
+}

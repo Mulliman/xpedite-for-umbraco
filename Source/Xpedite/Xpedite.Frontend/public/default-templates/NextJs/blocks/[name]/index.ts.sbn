@@ -1,0 +1,3 @@
+import {{ name.pascal_case }} from "./{{ name.value }}";
+
+export default {{ name.pascal_case }};
