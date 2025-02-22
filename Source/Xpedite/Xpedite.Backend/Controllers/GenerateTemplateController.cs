@@ -22,12 +22,12 @@ namespace Xpedite.Backend.Controllers
     [Route("api/v{version:apiVersion}/xpedite")]
     public class GenerateTemplateController : Controller
     {
-        private readonly Settings _settings;
+        private readonly XpediteSettings _settings;
         private readonly NextJsTemplateGenerator _generator;
         private readonly TemplateMapper _templateMapper;
         private readonly CodebaseUpdater _codebaseUpdater;
 
-        public GenerateTemplateController(Settings settings, TemplateMapper templateMapper, CodebaseUpdater codebaseUpdater)
+        public GenerateTemplateController(XpediteSettings settings, TemplateMapper templateMapper, CodebaseUpdater codebaseUpdater)
         {
             _settings = settings;
             _templateMapper = templateMapper;

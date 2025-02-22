@@ -22,12 +22,12 @@ namespace Xpedite.Backend.Controllers;
 [Route("api/v{version:apiVersion}/xpedite")]
 public class GeneratePartialController : Controller
 {
-    private readonly Settings _settings;
+    private readonly XpediteSettings _settings;
     private readonly NextJsPartialGenerator _generator;
     private readonly PartialMapper _templateMapper;
     private readonly CodebaseUpdater _codebaseUpdater;
 
-    public GeneratePartialController(Settings settings, PartialMapper templateMapper, CodebaseUpdater codebaseUpdater)
+    public GeneratePartialController(XpediteSettings settings, PartialMapper templateMapper, CodebaseUpdater codebaseUpdater)
     {
         _settings = settings;
         _templateMapper = templateMapper;

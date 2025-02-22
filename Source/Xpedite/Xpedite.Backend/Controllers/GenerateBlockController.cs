@@ -22,12 +22,12 @@ namespace Xpedite.Backend.Controllers
     [Route("api/v{version:apiVersion}/xpedite")]
     public class GenerateBlockController : Controller
     {
-        private readonly Settings _settings;
+        private readonly XpediteSettings _settings;
         private readonly NextJsBlockGenerator _generator;
         private readonly BlockMapper _mapper;
         private readonly CodebaseUpdater _codebaseUpdater;
 
-        public GenerateBlockController(Settings settings, BlockMapper mapper, CodebaseUpdater codebaseUpdater)
+        public GenerateBlockController(XpediteSettings settings, BlockMapper mapper, CodebaseUpdater codebaseUpdater)
         {
             _settings = settings;
             _mapper = mapper;

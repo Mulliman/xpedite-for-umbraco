@@ -3,9 +3,9 @@ using Xpedite.Generator;
 
 namespace Xpedite.Backend.Codebase;
 
-public class CodebaseUpdater(Settings settings)
+public class CodebaseUpdater(XpediteSettings settings)
 {
-    protected Settings Settings { get; } = settings;
+    protected XpediteSettings Settings { get; } = settings;
 
     public string SrcDirectory => Settings.CodebaseSrcPath;
 
