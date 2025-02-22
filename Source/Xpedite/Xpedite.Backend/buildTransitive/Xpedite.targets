@@ -9,7 +9,9 @@
 			<PackageReferenceProjectContentFiles Include="$(PackageReferenceProjectContentFilesPath)" />
 		</ItemGroup>
 		<Message Text="Copying xpedite files: $(PackageReferenceProjectContentFilesPath) - #@(PackageReferenceProjectContentFiles->Count()) files" Importance="high" />
-		<Copy SourceFiles="@(PackageReferenceProjectContentFiles)" DestinationFiles="@(PackageReferenceProjectContentFiles->'$(MSBuildProjectDirectory)\wwwroot\app_plugins\Xpedite.Frontend\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(PackageReferenceProjectContentFiles)" 
+			  DestinationFiles="@(PackageReferenceProjectContentFiles->'$(MSBuildProjectDirectory)\wwwroot\app_plugins\Xpedite.Frontend\%(RecursiveDir)%(Filename)%(Extension)')" 
+			  SkipUnchangedFiles="true" />
 	</Target>
 
 	<Target Name="ClearPackageReferenceProjectAssets" BeforeTargets="Clean">
