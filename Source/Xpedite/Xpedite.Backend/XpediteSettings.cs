@@ -3,10 +3,10 @@ using Microsoft.Extensions.Options;
 
 namespace Xpedite.Backend;
 
-public class XpediteSettings(IWebHostEnvironment hostingEnvironment, IOptions<XpediteAppSettings> xpediteSettings)
+public class XpediteSettings(IWebHostEnvironment hostingEnvironment, IOptions<Xpedite> xpediteSettings)
 {
     private readonly IWebHostEnvironment _hostingEnvironment = hostingEnvironment;
-    private readonly IOptions<XpediteAppSettings> _xpediteSettings = xpediteSettings;
+    private readonly IOptions<Xpedite> _xpediteSettings = xpediteSettings;
 
     public string? CodebaseSrcPath => _xpediteSettings?.Value?.CodebaseSrcPath;
 
@@ -17,7 +17,7 @@ public class XpediteSettings(IWebHostEnvironment hostingEnvironment, IOptions<Xp
     public bool AutoAddSectionToAdminUser => _xpediteSettings.Value?.AutoAddSectionToAdminUser ?? true;
 }
 
-public class XpediteAppSettings
+public class Xpedite
 {
     public string? CodebaseSrcPath { get; set; }
 

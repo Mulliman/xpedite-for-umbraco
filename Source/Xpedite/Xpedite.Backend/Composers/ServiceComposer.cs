@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Notifications;
+using Umbraco.Cms.Core.Services;
 using Xpedite.Backend.Codebase;
 using Xpedite.Backend.InputMappers;
 using Xpedite.Backend.Security;
@@ -18,6 +20,8 @@ public class ServiceComposer : IComposer
         builder.Services.AddScoped<TemplateMapper>();
         builder.Services.AddScoped<PartialMapper>();
         builder.Services.AddScoped<BlockMapper>();
+
+        builder.Services.Configure<Xpedite>(builder.Config.GetSection("Xpedite"));
 
         builder.AddNotificationAsyncHandler<UmbracoApplicationStartedNotification, AddXpediteSectionNotificationHandler>();
     }

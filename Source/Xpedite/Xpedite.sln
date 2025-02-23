@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco-15.2.0", "Umbraco\U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xpedite.StarterKit", "Xpedite.StarterKit\Xpedite.StarterKit.csproj", "{91C06672-CAD5-4790-88D7-5EE23BCF53A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco-15.2.1-nuget", "Umbraco\Umbraco-15.2.1-nuget\Umbraco-15.2.1-nuget.csproj", "{3EE8DA56-EB3D-4C0B-B46B-BBEBD9556362}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,17 +43,12 @@ Global
 		{91C06672-CAD5-4790-88D7-5EE23BCF53A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91C06672-CAD5-4790-88D7-5EE23BCF53A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91C06672-CAD5-4790-88D7-5EE23BCF53A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3EE8DA56-EB3D-4C0B-B46B-BBEBD9556362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3EE8DA56-EB3D-4C0B-B46B-BBEBD9556362}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3EE8DA56-EB3D-4C0B-B46B-BBEBD9556362}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3EE8DA56-EB3D-4C0B-B46B-BBEBD9556362}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{030D5B30-2935-4AB5-A41F-C51A18E579FC} = {5CFD1E54-92AE-4461-AB21-6045BB739A48}
-		{3EE8DA56-EB3D-4C0B-B46B-BBEBD9556362} = {5CFD1E54-92AE-4461-AB21-6045BB739A48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7EF47476-2DE6-4B08-B6B2-EE0B869985AB}

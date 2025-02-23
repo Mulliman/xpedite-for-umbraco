@@ -8,7 +8,7 @@
         {
           "name": "xpedite.Frontend EntryPoint",
           "alias": "xpedite.Frontend.entrypoint",
-          "type": "entryPoint",
+          "type": "backofficeEntryPoint",
           "js": "/app_plugins/Xpedite.Frontend/dist.js"
         }
       ]

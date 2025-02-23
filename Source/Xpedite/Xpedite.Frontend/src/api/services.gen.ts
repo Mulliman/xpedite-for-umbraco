@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
+import type { PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
 
 export class V1Service {
     /**
@@ -54,6 +54,20 @@ export class V1Service {
             url: '/api/v1/xpedite/generate-template',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                401: 'The resource is protected and requires an authentication token'
+            }
+        });
+    }
+    
+    /**
+     * @returns unknown OK
+     * @throws ApiError
+     */
+    public static getApiV1XpediteGetConfig(): CancelablePromise<GetApiV1XpediteGetConfigResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/xpedite/get-config',
             errors: {
                 401: 'The resource is protected and requires an authentication token'
             }

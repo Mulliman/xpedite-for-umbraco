@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>XPEDITE</id>
-		<version>15.0.0-alpha1</version>
+		<version>15.0.1</version>
 		<authors>Sam Mullins</authors>
 		<owners>Sam Mullins</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -17,7 +17,7 @@
 
 	<files>
 		<!-- Include compiled DLLs -->
-		<file src="bin\Release\net9.0\*.dll" target="lib/net9.0" />
+		<file src="bin\Debug\net9.0\*.dll" target="lib/net9.0" />
 
 		<!-- Include frontend files -->
 		<file src="ui\**\*.*" target="contentFiles/any/any/ui/" />

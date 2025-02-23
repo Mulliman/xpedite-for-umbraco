@@ -9,10 +9,22 @@
 		<Product>XPEDITE</Product>
 		<PackageIcon>Logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<IncludeSymbols>False</IncludeSymbols>
+		<IncludeSymbols>true</IncludeSymbols>
+		<IncludeSource>true</IncludeSource>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageOutputPath>$(OutputPath)</PackageOutputPath>
-		<Version>15.0.0</Version>
+		<Version>15.0.1</Version>
+		<ContentTargetFolders>.</ContentTargetFolders>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <Optimize>False</Optimize>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <Optimize>False</Optimize>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Update="README.md">
@@ -34,8 +46,16 @@
 		<PackageReference Include="Umbraco.Cms" Version="[15.2.0,)" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="ui\**" Pack="true" PackagePath="content\ui" />
-		<None Include="buildTransitive\**" Pack="true" PackagePath="buildTransitive" />
+		<Content Include="ui\**" Pack="true" PackagePath="content\ui">
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</Content>
+		<None Include="buildTransitive\**\*.*" Pack="true" PackagePath="buildTransitive" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Views\xpedite.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\XPedite.Generator\Xpedite.Generator.csproj" />
