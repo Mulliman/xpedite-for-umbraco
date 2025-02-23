@@ -1,4 +1,4 @@
-import { css, html, customElement, property } from "@umbraco-cms/backoffice/external/lit";
+import { css, html, customElement, property, state } from "@umbraco-cms/backoffice/external/lit";
 import { UmbLitElement } from "@umbraco-cms/backoffice/lit-element";
 import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import { Task } from "@lit/task";
@@ -12,6 +12,9 @@ import { UmbDataSourceResponse } from "@umbraco-cms/backoffice/repository";
 
 @customElement("xpedite-welcome")
 export class XpediteWelcome extends UmbLitElement {
+  @state()
+  refreshToken: string = "FirstLoad";
+
   constructor() {
     super();
   }
@@ -20,12 +23,10 @@ export class XpediteWelcome extends UmbLitElement {
     task: async () => {
       return tryExecuteAndNotify(this, V1Service.getApiV1XpediteGetConfig());
     },
-    args: () => ["Run"],
+    args: () => [this.refreshToken],
   });
 
   override render() {
-    console.log("render");
-
     return this._initTask.render({
       error: () => {
         console.log("error");
@@ -78,10 +79,30 @@ export class XpediteWelcome extends UmbLitElement {
       <div>
         <h2 class="in-progress">You are a few steps away...</h2>
         <ol class="steps">
-          ${this.#renderDeliveryApiStep(config)} ${this.#renderNextJsStep(config)} ${this.#renderSrcDirectoryStep(config)}
-          ${this.#renderTestingStep(config)} ${this.#renderXpediteCodeStep(config)}
+          ${this.#renderDeliveryApiInstallStep(config)} ${this.#renderDeliveryApiStep(config)} ${this.#renderNextJsStep(config)}
+          ${this.#renderSrcDirectoryStep(config)} ${this.#renderTestingStep(config)} ${this.#renderDotEnvStep(config)}
+          ${this.#renderXpediteCodeStep(config)} ${this.#renderContentStep(config)}
         </ol>
       </div>
+    `;
+  }
+
+  #renderDeliveryApiInstallStep(config: ConfigModel) {
+    const className = config.isDeliveryApiInstalled ? "done" : "";
+
+    return html`
+      <li class=${className}>
+        <h3>Install Delivery API in <code>Program.cs</code></h3>
+        <div class="help">
+          <pre>
+builder.CreateUmbracoBuilder()
+    .AddBackOffice()
+    .AddWebsite()
+    .AddDeliveryApi()
+    .AddComposers()
+    .Build();</pre>
+        </div>
+      </li>
     `;
   }
 
@@ -116,7 +137,20 @@ export class XpediteWelcome extends UmbLitElement {
       <li class=${className}>
         <h3>Run <code>npx create-next-app@latest</code> in the directory where you want to create your headless Next.js app.</h3>
         <div class="help">
-          Visit the <a href="https://nextjs.org/docs/app/getting-started/installation" target="_blank">Next.js documentation</a> for options.
+          <p>
+            Visit the <a href="https://nextjs.org/docs/app/getting-started/installation" target="_blank">Next.js documentation</a> for options. The
+            current settings used for testing in XPEDITE are:
+          </p>
+          <pre>
+√ What is your project named? ... {Your project name}
+√ Would you like to use TypeScript? ... Yes
+√ Would you like to use ESLint? ... Yes
+√ Would you like to use Tailwind CSS? ... No
+√ Would you like your code inside a src directory? ... Yes
+√ Would you like to use App Router? (recommended) ... Yes
+√ Would you like to use Turbopack for? ... No
+√ Would you like to customize the import alias... No</pre
+          >
         </div>
       </li>
     `;
@@ -146,10 +180,88 @@ export class XpediteWelcome extends UmbLitElement {
 
     return html`
       <li class=${className}>
-        <h3>Run <code>???</code> to install the testing dependencies</h3>
-        <div class="help">Visit the <a href="#" target="_blank">Jest documentation</a> for options.</div>
+        <h3>Install the testing dependencies Jest and React Testing Library</h3>
+        <div class="help">
+          <pre>npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node</pre>
+          <pre>
+npm init jest@latest
+
+√ Would you like to use Jest when running "test" script in "package.json"? ... yes
+√ Would you like to use Typescript for the configuration file? ... yes
+√ Choose the test environment that will be used for testing » jsdom (browser-like)
+√ Do you want Jest to add coverage reports? ... yes
+√ Which provider should be used to instrument code for coverage? » v8
+√ Automatically clear mock calls, instances, contexts and results before every test? ... no</pre
+          >
+          <p>Add the jest types as a dev dependency so you can run the tests.</p>
+          <pre>npm i -D @types/jest jest</pre>
+          <p>Update <code>jest.config.ts</code> with the following settings</p>
+          <pre>
+import type { Config } from 'jest'
+import nextJest from 'next/jest.js'
+ 
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: './',
+})
+ 
+// Add any custom config to be passed to Jest
+const config: Config = {
+  coverageProvider: 'v8',
+  testEnvironment: 'jsdom',
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+}
+ 
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+export default createJestConfig(config)</pre
+          >
+          <p>
+            Visit the <a href="https://nextjs.org/docs/app/building-your-application/testing/jest" target="_blank">Next.js Jest documentation</a> for
+            options.
+          </p>
+        </div>
       </li>
     `;
+  }
+
+  #renderContentStep(config: ConfigModel) {
+    const className = config.isContentInPlace ? "done" : "";
+
+    return html`
+      <li class=${className}>
+        <h3>Add and publish content.</h3>
+        <div class="help">
+          <p>If you are creating your document types and pages from scratch, make sure that they are published.</p>
+          <p>Why not use the XPEDITE starter kit to add a basic structure using <code>dotnet add XPEDITE.StarterKit</code>?</p>
+        </div>
+      </li>
+    `;
+  }
+
+  #renderDotEnvStep(config: ConfigModel) {
+    const className = config.isEnvFileInstalled ? "done" : "";
+
+    return html`
+      <li class=${className}>
+        <h3>Add a <code>.env</code> file to the root of your Next.js project folder.</h3>
+        <div class="help">
+          <p><button @click=${() => this.#createDotEnv()}>Automatically add .env file</button> or add the following to an existing file:</p>
+          <pre>
+UMBRACO_SERVER_URL={Your URL}
+UMBRACO_DELIVERY_API_KEY={Your API KEY}
+UMBRACO_HOME_ITEM={Your home page}
+            </pre
+          >
+        </div>
+      </li>
+    `;
+  }
+
+  async #createDotEnv() {
+    await tryExecuteAndNotify(this, V1Service.postApiV1XpediteAddEnvFile());
+
+    this.refreshToken = new Date().toISOString();
   }
 
   #renderXpediteCodeStep(config: ConfigModel) {
@@ -158,7 +270,10 @@ export class XpediteWelcome extends UmbLitElement {
     return html`
       <li class=${className}>
         <h3>Install XPEDITE types and example components to your codebase</h3>
-        <div class="help"><button>Automatically copy files to codebase</button> or copy the files you want manually from the app_plugins folder of this Umbraco instance.</div>
+        <div class="help">
+          <button>Automatically copy files to codebase</button> or copy the files you want manually from the app_plugins folder of this Umbraco
+          instance.
+        </div>
       </li>
     `;
   }

@@ -3,9 +3,24 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
+import type { PostApiV1XpediteAddEnvFileResponse, PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
 
 export class V1Service {
+    /**
+     * @returns string OK
+     * @throws ApiError
+     */
+    public static postApiV1XpediteAddEnvFile(): CancelablePromise<PostApiV1XpediteAddEnvFileResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xpedite/add-env-file',
+            responseHeader: 'Umb-Notifications',
+            errors: {
+                401: 'The resource is protected and requires an authentication token'
+            }
+        });
+    }
+    
     /**
      * @param data The data for the request.
      * @param data.requestBody
