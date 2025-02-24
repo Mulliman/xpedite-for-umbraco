@@ -48,7 +48,7 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
       documentTypeId: this._chosenContentType,
       selectedProperties: this._selectedFields,
       componentName: this._options?.name,
-      variantName: this._options?.variant
+      variantName: this._options?.variant,
     } as GenerateApiModel;
 
     return data;
@@ -84,10 +84,10 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
   }
 
   #onVariantChange(event: UUIBooleanInputEvent) {
-		var variant = event.target.checked ? "includingPageData" : undefined;
+    var variant = event.target.checked ? "includingPageData" : undefined;
 
-    this.#setOptionsValue('variant', variant);
-	}
+    this.#setOptionsValue("variant", variant);
+  }
 
   #selectFields(event: CustomEvent) {
     const fieldPicker = event.target as XpediteFieldPicker;
@@ -108,28 +108,26 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     if (!this._chosenContentType) return null;
 
     return html`
-      <uui-box>
-        <div slot="headline">Options</div>
+      <div class="card-gap">
+        <uui-box headline="Options">
+          <umb-property-layout label="Component name" orientation="vertical">
+            <div id="editor" slot="editor">
+              <uui-input
+                label="Name"
+                placeholder="Enter name"
+                @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}
+              ></uui-input>
+            </div>
+          </umb-property-layout>
 
-        <umb-property-layout label="Component name" orientation="vertical">
-          <div id="editor" slot="editor">
-            <uui-input
-              label="Name"
-              placeholder="Enter name"
-              @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}
-            ></uui-input>
-          </div>
-        </umb-property-layout>
-
-        <umb-property-layout label="Include page data" orientation="vertical">
-          <div id="editor" slot="editor">
-            <uui-toggle
-            .checked=${this._options?.variant == "includingPageData"}
-						@change=${(e: UUIBooleanInputEvent) => this.#onVariantChange(e)}>
-            </uui-toggle>
-          </div>
-        </umb-property-layout>
-      </uui-box>
+          <umb-property-layout label="Include generic page data" orientation="vertical">
+            <div id="editor" slot="editor">
+              <uui-toggle .checked=${this._options?.variant == "includingPageData"} @change=${(e: UUIBooleanInputEvent) => this.#onVariantChange(e)}>
+              </uui-toggle>
+            </div>
+          </umb-property-layout>
+        </uui-box>
+      </div>
     `;
   }
 
@@ -161,10 +159,25 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
   }
 
   render() {
-    return html` <div>${this.#renderChooseDocumentTypeStep()} ${this.#renderOptionsStep()} ${this.#renderChooseFieldsStep()}</div> `;
+    return html` <div>${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()} ${this.#renderOptionsStep()}</div> `;
   }
 
-  static styles = [UmbTextStyles, css``];
+  static styles = [
+    UmbTextStyles,
+    css`
+      .card-gap {
+        margin-top: 16px;
+      }
+
+      umb-property-layout:first-child {
+				padding-top: 0;
+			}
+
+			umb-property-layout:last-child {
+				padding-bottom: 0;
+			}
+    `,
+  ];
 }
 
 export default XpeditePartialsWizard;

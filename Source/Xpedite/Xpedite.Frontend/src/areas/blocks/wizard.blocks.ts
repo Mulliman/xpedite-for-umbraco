@@ -88,10 +88,10 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     this.#refreshApiModel();
   }
 
-  #refreshApiModel(){
+  #refreshApiModel() {
     const newModel = this.#createApiModel();
 
-    if(newModel){
+    if (newModel) {
       this.#context?.updateApiModel(newModel);
     }
   }
@@ -120,12 +120,14 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     if (!this._chosenContentType) return null;
 
     return html`
-      <uui-box>
-        <div slot="headline">Options</div>
-
+      <uui-box class="card-gap" headline="Options">
         <umb-property-layout label="Component name" orientation="vertical">
           <div id="editor" slot="editor">
-            <uui-input label="Name" placeholder="Enter name" @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}></uui-input>
+            <uui-input
+              label="Name"
+              placeholder="Enter name"
+              @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}
+            ></uui-input>
           </div>
         </umb-property-layout>
       </uui-box>
@@ -191,13 +193,28 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
   render() {
     return html`
       <div>
-        ${this.#renderChooseDocumentTypeStep()} ${this.#renderOptionsStep()} ${this.#renderChooseFieldsStep()}
-        ${this.#renderChooseSettingsDocumentTypeStep()} ${this.#renderChooseSettingsStep()}
+        ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()} ${this.#renderChooseSettingsDocumentTypeStep()}
+        ${this.#renderChooseSettingsStep()} ${this.#renderOptionsStep()}
       </div>
     `;
   }
 
-  static styles = [UmbTextStyles, css``];
+  static styles = [
+    UmbTextStyles,
+    css`
+      .card-gap {
+        margin-top: 16px;
+      }
+
+      umb-property-layout:first-child {
+        padding-top: 0;
+      }
+
+      umb-property-layout:last-child {
+        padding-bottom: 0;
+      }
+    `,
+  ];
 }
 
 export default XpediteBlocksWizard;
