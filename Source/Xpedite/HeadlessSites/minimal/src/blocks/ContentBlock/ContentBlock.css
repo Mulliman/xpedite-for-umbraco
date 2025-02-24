@@ -1,0 +1,40 @@
+.block-content-block {
+    border: 2px solid #FAAB7B;
+    max-width: 300px;
+    box-sizing: border-box;
+    position: relative;
+    text-align: center;
+    background: #eee;
+    padding: 10px;
+}
+
+.block-content-block>* {
+    display: block;
+    position: relative;
+}
+
+.block-content-block-name {
+    background: #FAAB7B;
+    color: black;
+}
+
+.block-content-block--icon{
+    max-height: 60px;
+}
+
+.block-content-block .inner {
+    padding:1rem;
+}
+
+.block-content-block a {
+    display: inline-block;
+    text-decoration: underline;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: black;
+    color: white;
+}
+
+.block-content-block img {
+    max-width: 100%;
+}

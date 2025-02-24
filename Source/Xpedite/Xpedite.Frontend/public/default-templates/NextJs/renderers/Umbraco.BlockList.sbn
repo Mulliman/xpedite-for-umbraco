@@ -1,0 +1,9 @@
+{{"{"}}{{property_alias}} && (
+    <section className="">
+    {{"{"}}{{property_alias}}.items.map((contentRow: Block<any, any>) => (
+            <div key={contentRow?.content?.id} className="">
+                <BlockRenderer {...contentRow} />
+            </div>
+        )){{"}"}}
+    </section>
+){{"}"}}

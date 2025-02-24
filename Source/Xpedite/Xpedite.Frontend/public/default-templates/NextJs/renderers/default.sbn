@@ -1,1 +1,1 @@
-{{"{"}} {{property_alias}} {{"}"}}
+<div className="default-renderer">{{"{"}} {{property_alias}} {{"}"}}</div>

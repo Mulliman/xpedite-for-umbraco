@@ -1,4 +1,6 @@
 import { Block } from "@/umbraco/types";
+import UmbracoImages from "@/components/UmbracoImages";
+import UmbracoLinks from "@/components/UmbracoLinks";
 
 import './{{name.value}}.css'
 
@@ -10,16 +12,16 @@ export type {{name.pascal_case}}SettingsProps = { {{ for setting in settings }}
     {{ setting.alias }}?: any,{{ end }}
 }
 
-type {{name.pascal_case}}Props = Block<{{name.pascal_case}}Props, {{name.pascal_case}}SettingsProps>;
+type {{name.pascal_case}}Props = Block<{{name.pascal_case}}ContentProps, {{name.pascal_case}}SettingsProps>;
 
 export default function {{ name.pascal_case }} ({ content, settings } : {{name.pascal_case}}Props) {
     const { {{ for prop in properties }}{{ prop.alias }},{{ end }} } = content?.properties || {};
-    {{ if settings.size > 0 }} const { {{ for setting in settings }}{{ setting.alias }},{{ end }} } = setting?.properties || {};
+    {{ if settings.size > 0 }} const { {{ for setting in settings }}{{ setting.alias }},{{ end }} } = settings?.properties || {};
     {{ end }}
 
     return (
         <div className="block-{{ name.kebab_case }}">
-            <div className="block-name">Block: {{ name.pascal_case }}</div>
+            <div className="block-{{ name.kebab_case }}-name">Block: {{ name.pascal_case }}</div>
 
             {{ for renderedProperty in rendered_properties }}{{ renderedProperty }}
             {{ end }}
@@ -28,3 +30,5 @@ export default function {{ name.pascal_case }} ({ content, settings } : {{name.p
         </div>
     )
 }
+
+// TODO: Add block to the blocksMap in blocks.ts with value -> {{name.camel_case}}: lazy(() => import('./{{name.value}}')),

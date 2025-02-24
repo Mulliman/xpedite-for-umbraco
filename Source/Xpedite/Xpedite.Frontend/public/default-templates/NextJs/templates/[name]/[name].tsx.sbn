@@ -1,5 +1,7 @@
 import { TypedUmbracoNode } from "@/umbraco/types";
 
+import './{{name.value}}.css'
+
 export type {{ name.pascal_case }}Props = { {{ for prop in properties }}
     {{ prop.alias }}?: any,{{ end }}
 }
@@ -9,8 +11,11 @@ export default function {{ name.pascal_case }} (currentPage : TypedUmbracoNode<{
 
     return (
         <div className="template-{{ name.kebab_case }}">
+            <div className="template-{{ name.kebab_case }}-name">Template: {{ name.pascal_case }}</div>
         {{ for renderedProperty in rendered_properties }}
         {{ renderedProperty }}{{ end }}
         </div>
     )
 }
+
+// TODO: Add template to the templatesMap in templates.ts with value -> {{name.camel_case}}: lazy(() => import('./{{name.value}}')),

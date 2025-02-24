@@ -1,31 +1,30 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { TypedUmbracoNode } from "@/umbraco/types";
-import {{ name.pascal_case }}, {{"{"}} {{ name.pascal_case }}Props  {{"}"}} from '../{{ name.pascal_case }}';
+import ContentBlock, { ContentBlockProps  } from '../ContentBlock';
 
-describe('{{ name.pascal_case }}', () => {
+describe('ContentBlock', () => {
 
     const testData = {
         // Fill in props with some test data
-    } as TypedUmbracoNode<{{name.pascal_case}}Props>;
+    } as TypedUmbracoNode<ContentBlockProps>;
 
     const emptyTestData = {
         // Fill in props with with the empty state
-    } as TypedUmbracoNode<{{name.pascal_case}}Props>;
+    } as TypedUmbracoNode<ContentBlockProps>;
 
     it('matches snapshot', () => {
-        const { asFragment } = render(<{{ name.pascal_case }} {...testData} />);
+        const { asFragment } = render(<ContentBlock {...testData} />);
         expect(asFragment()).toMatchSnapshot();
     });
 
     it('contains expected element example', () => {
-        const { container } = render(<{{ name.pascal_case }} {...testData} />);
+        const { container } = render(<ContentBlock {...testData} />);
         expect(container.innerHTML).toContain('Replace with expected data');
     });
 
     it('renders valid output when properties are empty', () => {
-        const { container } = render(<{{ name.pascal_case }} {...emptyTestData} />);
+        const { container } = render(<ContentBlock {...emptyTestData} />);
         expect(container.innerHTML).toContain('<div class=""></div>');
-
     });
 });
