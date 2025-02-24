@@ -1,8 +1,8 @@
 ﻿namespace Xpedite.Generator.NextJs;
 
-public record NextJsInput(string Name, List<PropertyTokens> Properties) : INextJsInput;
+public record NextJsInput(string Name, List<PropertyTokens> Properties, string? VariantName = null) : INextJsInput;
 
-public record NextJsTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<string>? RenderedProperties);
+public record NextJsTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<string>? RenderedProperties, string? VariantName = null);
 
 public abstract class GeneratorBase<TInput, TTransformData>(string rootDirectory, IFieldRenderer fieldRenderer)
     where TInput : NextJsInput
@@ -18,7 +18,7 @@ public abstract class GeneratorBase<TInput, TTransformData>(string rootDirectory
     {
         ArgumentNullException.ThrowIfNull(input, nameof(input));
 
-        var filePathsIncludingTokens = GetTemplateFilePaths();
+        var filePathsIncludingTokens = GetTemplateFilePaths(input.VariantName);
 
         var renderedFields = await GetRenderedFields(input);
         var model = await CreateTransformData(input, renderedFields);
@@ -34,7 +34,7 @@ public abstract class GeneratorBase<TInput, TTransformData>(string rootDirectory
         return new GeneratedFiles { Files = generatedFiles };
     }
 
-    protected abstract string[] GetTemplateFilePaths();
+    protected abstract string[] GetTemplateFilePaths(string? variant = null);
 
     protected abstract Task<TTransformData> CreateTransformData(TInput input, string[] renderedFields);
 

@@ -1,10 +1,10 @@
 ﻿namespace Xpedite.Generator.NextJs;
 
-public record NextJsBlockInput(string Name, List<PropertyTokens> Properties, List<PropertyTokens> Settings)
-    : NextJsInput(Name, Properties);
+public record NextJsBlockInput(string Name, List<PropertyTokens> Properties, List<PropertyTokens> Settings, string? VariantName = null)
+    : NextJsInput(Name, Properties, VariantName);
 
-public record NextJsBlockTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<PropertyTokens>? Settings, List<string>? FieldRenderers, List<string>? RenderedSettings)
-    : NextJsTransformData(Name, Properties, FieldRenderers);
+public record NextJsBlockTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<PropertyTokens>? Settings, List<string>? FieldRenderers, List<string>? RenderedSettings, string? VariantName = null)
+    : NextJsTransformData(Name, Properties, FieldRenderers, VariantName);
 
 public class NextJsBlockGenerator(string rootDirectory, IFieldRenderer fieldRenderer) : GeneratorBase<NextJsBlockInput, NextJsBlockTransformData>(rootDirectory, fieldRenderer)
 {
@@ -12,7 +12,7 @@ public class NextJsBlockGenerator(string rootDirectory, IFieldRenderer fieldRend
     {
         var renderedSettings = await GetRenderedSettings(input);
 
-        var model = new NextJsBlockTransformData(new MultiCasedValue(input.Name), input.Properties, input.Settings, [.. renderedFields], [.. renderedSettings]);
+        var model = new NextJsBlockTransformData(new MultiCasedValue(input.Name), input.Properties, input.Settings, [.. renderedFields], [.. renderedSettings], input.VariantName);
 
         return model;
     }
@@ -27,7 +27,7 @@ public class NextJsBlockGenerator(string rootDirectory, IFieldRenderer fieldRend
         return new GeneratedFile(newFileName, output);
     }
 
-    protected override string[] GetTemplateFilePaths()
+    protected override string[] GetTemplateFilePaths(string? variant = null)
     {
         return FileManager.GetFilePaths(FileManager.BlocksDirectory);
     }

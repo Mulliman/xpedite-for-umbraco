@@ -4,6 +4,8 @@ public class GenerateApiModel
 {
     public string? ComponentName { get; set; }
 
+    public string? VariantName { get; set; }
+
     public Guid DocumentTypeId { get; set; }
 
     public IEnumerable<string> SelectedProperties { get; set; } = [];

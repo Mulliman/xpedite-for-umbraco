@@ -19,7 +19,7 @@ public abstract class NextJsMapper<TApi>(IContentTypeService contentTypeService,
         var propertyTokens = await GeneratePropertyTokens(model, contentType);
         var name = GetComponentName(model, contentType);
 
-        return new NextJsInput(name, propertyTokens);
+        return new NextJsInput(name, propertyTokens, model.VariantName);
     }
 
     protected virtual async Task<List<PropertyTokens>> GeneratePropertyTokens(TApi model, IContentType contentType)

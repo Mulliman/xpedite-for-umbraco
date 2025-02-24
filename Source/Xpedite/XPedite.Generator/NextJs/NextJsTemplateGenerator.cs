@@ -4,7 +4,7 @@ public class NextJsTemplateGenerator(string rootDirectory, IFieldRenderer fieldR
 {
     protected override Task<NextJsTransformData> CreateTransformData(NextJsInput input, string[] renderedFields)
     {
-        return Task.FromResult(new NextJsTransformData(new MultiCasedValue(input.Name), input.Properties, [.. renderedFields]));
+        return Task.FromResult(new NextJsTransformData(new MultiCasedValue(input.Name), input.Properties, [.. renderedFields], input.VariantName));
     }
 
     protected override async Task<GeneratedFile> GenerateFile(NextJsTransformData data, string filePathIncludingTokens)
@@ -17,7 +17,7 @@ public class NextJsTemplateGenerator(string rootDirectory, IFieldRenderer fieldR
         return new GeneratedFile(newFileName, output);
     }
 
-    protected override string[] GetTemplateFilePaths()
+    protected override string[] GetTemplateFilePaths(string? variant = null)
     {
         return FileManager.GetFilePaths(FileManager.TemplatesDirectory);
     }

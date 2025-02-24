@@ -10,7 +10,9 @@ public class FileManager(string rootDirectory)
 
     public string TemplatesDirectory => Path.Combine(RootDirectory, "templates");
 
-    public string PartialsDirectory => Path.Combine(RootDirectory, "partials");
+    public string PartialsDirectoryName => "partials";
+
+    public string PartialsDirectory => Path.Combine(RootDirectory, PartialsDirectoryName);
 
     public string BlocksDirectory => Path.Combine(RootDirectory, "blocks");
 

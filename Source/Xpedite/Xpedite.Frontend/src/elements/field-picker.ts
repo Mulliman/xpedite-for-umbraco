@@ -66,7 +66,7 @@ export class XpediteFieldPicker extends UmbLitElement {
 				this._customFields = [...this._customFields, ...compositionProperties];
 			}
 
-            this.value = data.properties.map((x) => x.alias);
+            this.value = data.properties.length ? data.properties.map((x) => x.alias) : this._customFields.filter(f => !!f.alias).map(f => f.alias!);
         }
       });
 

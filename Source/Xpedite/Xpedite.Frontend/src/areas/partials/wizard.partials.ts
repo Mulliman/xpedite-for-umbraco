@@ -10,6 +10,7 @@ import "../../elements/field-picker";
 import { GenerateApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpeditePartialsContext, { PARTIALS_CONTEXT_TOKEN } from "./context.partials";
+import { UUIBooleanInputEvent } from "@umbraco-cms/backoffice/external/uui";
 
 @customElement("xpedite-partials-wizard")
 export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
@@ -19,9 +20,11 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
   _chosenContentType: string | undefined;
 
   @state()
-  _options: {
+  _options:
+    | {
         name: string;
         createComponentPage: boolean;
+        variant?: string;
       }
     | undefined;
 
@@ -45,6 +48,7 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
       documentTypeId: this._chosenContentType,
       selectedProperties: this._selectedFields,
       componentName: this._options?.name,
+      variantName: this._options?.variant
     } as GenerateApiModel;
 
     return data;
@@ -65,15 +69,25 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
   }
 
   #setOptions(event: CustomEvent & { target: HTMLInputElement }, propertyName: string) {
-    this._options = { 
-      ...this._options, 
-      [propertyName]: event.target.value 
+    this.#setOptionsValue(propertyName, event.target.value);
+  }
+
+  #setOptionsValue(propertyName: string, propertyValue: any) {
+    this._options = {
+      ...this._options,
+      [propertyName]: propertyValue,
     } as { name: string; createComponentPage: boolean };
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
 
     this.#refreshApiModel();
   }
+
+  #onVariantChange(event: UUIBooleanInputEvent) {
+		var variant = event.target.checked ? "includingPageData" : undefined;
+
+    this.#setOptionsValue('variant', variant);
+	}
 
   #selectFields(event: CustomEvent) {
     const fieldPicker = event.target as XpediteFieldPicker;
@@ -82,10 +96,10 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     this.#refreshApiModel();
   }
 
-  #refreshApiModel(){
+  #refreshApiModel() {
     const newModel = this.#createApiModel();
 
-    if(newModel){
+    if (newModel) {
       this.#context?.updateApiModel(newModel);
     }
   }
@@ -99,7 +113,20 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
 
         <umb-property-layout label="Component name" orientation="vertical">
           <div id="editor" slot="editor">
-            <uui-input label="Name" placeholder="Enter name" @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}></uui-input>
+            <uui-input
+              label="Name"
+              placeholder="Enter name"
+              @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}
+            ></uui-input>
+          </div>
+        </umb-property-layout>
+
+        <umb-property-layout label="Include page data" orientation="vertical">
+          <div id="editor" slot="editor">
+            <uui-toggle
+            .checked=${this._options?.variant == "includingPageData"}
+						@change=${(e: UUIBooleanInputEvent) => this.#onVariantChange(e)}>
+            </uui-toggle>
           </div>
         </umb-property-layout>
       </uui-box>

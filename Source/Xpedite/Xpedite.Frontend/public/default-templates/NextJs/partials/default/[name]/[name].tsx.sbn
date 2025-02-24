@@ -1,0 +1,15 @@
+import './{{name.value}}.css'
+
+export type {{name.pascal_case}}Props = { {{ for prop in properties }}
+    {{ prop.alias }}?: any,{{ end }}
+}
+
+export default function {{ name.pascal_case }} ({ {{ for prop in properties }}{{ prop.alias }},{{ end }} } : {{name.pascal_case}}Props) {
+    return (
+        <div className="partial-{{ name.kebab_case }}">
+            <div className="partial-{{ name.kebab_case }}-name">Partial: {{ name.pascal_case }}</div>
+    {{ for renderedProperty in rendered_properties }}
+        {{ renderedProperty }}{{ end }}
+        </div>
+    )
+}

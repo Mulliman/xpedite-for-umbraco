@@ -18,7 +18,7 @@ public class BlockMapper(IContentTypeService contentTypeService, IDataTypeServic
 
         var name = GetComponentName(model, contentType);
 
-        return new NextJsBlockInput(name, propertyTokens, settingTokens);
+        return new NextJsBlockInput(name, propertyTokens, settingTokens, model.VariantName);
     }
 
     private async Task<List<PropertyTokens>> CreateSettingTokens(GenerateBlockApiModel model)

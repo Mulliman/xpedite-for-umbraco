@@ -22,12 +22,14 @@ export enum EventMessageTypeModel {
 
 export type GenerateApiModel = {
     componentName?: string | null;
+    variantName?: string | null;
     documentTypeId: string;
     selectedProperties: Array<(string)>;
 };
 
 export type GenerateBlockApiModel = {
     componentName?: string | null;
+    variantName?: string | null;
     documentTypeId: string;
     selectedProperties: Array<(string)>;
     settingsTypeId?: string | null;
