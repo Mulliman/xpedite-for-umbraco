@@ -3,4 +3,5 @@ export interface IGeneratorInfo {
     description: string;
     url: string;
     icon: string;
+    colour: string;
 }

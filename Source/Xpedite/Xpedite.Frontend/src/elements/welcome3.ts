@@ -4,14 +4,18 @@ import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import { Task } from "@lit/task";
 
 import "@umbraco-cms/backoffice/code-editor";
+import "./create-button";
 
 import logo from "../_assets/logo-transparent-big-blue.png";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
 import { ConfigModel, V1Service } from "../api";
 import { UmbDataSourceResponse } from "@umbraco-cms/backoffice/repository";
+import PartialsInfo, { partialsColour, partialsIcon } from "../areas/partials/info.partials";
+import BlocksInfo, { blocksColour, blocksIcon } from "../areas/blocks/info.blocks";
+import TemplatesInfo, { templatesColour, templatesIcon } from "../areas/templates/info.templates";
 
-@customElement("xpedite-welcome")
-export class XpediteWelcome extends UmbLitElement {
+@customElement("xpedite-welcome3")
+export class XpediteWelcome3 extends UmbLitElement {
   @state()
   refreshToken: string = "FirstLoad";
 
@@ -42,7 +46,6 @@ export class XpediteWelcome extends UmbLitElement {
     <div class="logo"><img src=${logo} alt="XPEDITE logo" /></div>
 
       <div class="welcome">
-        <h1 class="in-progress uui-font">You are a few steps away...</h1>
         ${this.#renderSuccess(config)} ${this.#renderInProgress(config)}
       </div>`;
   }
@@ -53,14 +56,20 @@ export class XpediteWelcome extends UmbLitElement {
     }
 
     return html`
-      <img src=${logo} alt="XPEDITE logo" />
-
+      <h1 class="in-progress uui-font">Create a component</h1>
+      <div class="buttons" style="margin-bottom: 0.5rem;">
+        <xpedite-create-button .value=${new TemplatesInfo()}></xpedite-create-button>
+        <xpedite-create-button .value=${new PartialsInfo()}></xpedite-create-button>
+        <xpedite-create-button .value=${new BlocksInfo()}></xpedite-create-button>
+        <!-- <button class="big" style="background:linear-gradient(to bottom left, #318487, ${templatesColour})">Create template <uui-icon name=${templatesIcon}></uui-icon></button> 
+        <button class="big" style="background:linear-gradient(to top right, #318487, ${partialsColour})">Create partial <uui-icon name=${partialsIcon}></uui-icon></button> 
+        <button class="big" style="background:linear-gradient(to top right, #318487, ${blocksColour})">Create block <uui-icon name=${blocksIcon}></uui-icon></button></div> -->
       <div>
-        <div class="logo-title">
+        <!-- <div class="logo-title">
           <h2 class="success">You are completely set up!</h2>
-        </div>
+        </div> -->
 
-        <ul class="info">
+        <!-- <ul class="info">
           <li>
             <h3>
               Your templates folder:
@@ -73,7 +82,7 @@ export class XpediteWelcome extends UmbLitElement {
               <code class="file-path">${config.codebaseSrcPath}</code>
             </h3>
           </li>
-        </ul>
+        </ul> -->
       </div>
     `;
   }
@@ -84,6 +93,7 @@ export class XpediteWelcome extends UmbLitElement {
     }
 
     return html`
+      <h1 class="in-progress uui-font">You are a few steps away...</h1>
       <div>
         <!-- <h2 class="in-progress">You are a few steps away...</h2> -->
         <ol class="steps">
@@ -295,7 +305,7 @@ UMBRACO_HOME_ITEM={Your home page}
 
       .logo {
         text-align: center;
-        margin-bottom: -67px;
+        margin-bottom: -65px;
 
         img {
           display: inline-block;
@@ -321,13 +331,8 @@ UMBRACO_HOME_ITEM={Your home page}
       }
 
       .welcome {
-        background: linear-gradient(to top right, #090223 66%, #210223);
-        background: linear-gradient(to top right, #001111, #011b1b);
-
-        border-top: 15px solid #2b9088;
-        /* border-top: 10px solid transparent;
-        border-image: linear-gradient(to top left, #056684 50%, #2b9088, #92c88c) 1; */
-
+        background: linear-gradient(to right top, rgb(0, 10, 10) 65%, rgb(1, 27, 27)); 
+        border: 10px solid rgb(43, 144, 136);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -337,7 +342,7 @@ UMBRACO_HOME_ITEM={Your home page}
         margin-bottom: 2rem;
         box-shadow: var(--uui-shadow-depth-1, 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24));
         border-radius: var(--uui-border-radius, 3px);
-        border-radius: 30px;
+        border-radius: 15px;
 
         a {
           color: #80ccb5;
@@ -355,6 +360,20 @@ UMBRACO_HOME_ITEM={Your home page}
 
           &:hover {
             background: #206063;
+          }
+        }
+
+        button.big {
+          font-size: 1rem;
+          margin: 0 5px;
+          padding: 15px;
+
+          uui-icon{
+            margin-left: 5px;
+          }
+
+          &:hover {
+            background: #206063!important;
           }
         }
 
@@ -409,7 +428,7 @@ UMBRACO_HOME_ITEM={Your home page}
           text-align: left;
 
           li {
-            padding-bottom: 40px;
+            padding-bottom: 1rem;
 
             code,
             pre {
@@ -450,10 +469,10 @@ UMBRACO_HOME_ITEM={Your home page}
   ];
 }
 
-export default XpediteWelcome;
+export default XpediteWelcome3;
 
 declare global {
   interface HTMLElementTagNameMap {
-    "xpedite-welcome": XpediteWelcome;
+    "xpedite-welcome3": XpediteWelcome3;
   }
 }

@@ -6,6 +6,8 @@ import { IGeneratorInfo } from "../../IGeneratorInfo";
 
 import "../../elements/generator-card";
 import "../../elements/welcome";
+import "../../elements/welcome2";
+import "../../elements/welcome3";
 import PartialsInfo from "../partials/info.partials";
 import BlocksInfo from "../blocks/info.blocks";
 
@@ -26,7 +28,8 @@ export class XpediteStartDashboard extends UmbElementMixin(LitElement) {
 
     return html`
       <umb-body-layout>
-      <xpedite-welcome></xpedite-welcome>
+      <xpedite-welcome3></xpedite-welcome3>
+      <!-- <xpedite-welcome2></xpedite-welcome2> -->
         <div class="generators-grid">
           ${generators}
         </div>

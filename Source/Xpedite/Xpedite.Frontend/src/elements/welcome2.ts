@@ -5,13 +5,13 @@ import { Task } from "@lit/task";
 
 import "@umbraco-cms/backoffice/code-editor";
 
-import logo from "../_assets/logo-transparent-big-blue.png";
+import logo from "../_assets/logo-transparent.png";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
 import { ConfigModel, V1Service } from "../api";
 import { UmbDataSourceResponse } from "@umbraco-cms/backoffice/repository";
 
-@customElement("xpedite-welcome")
-export class XpediteWelcome extends UmbLitElement {
+@customElement("xpedite-welcome2")
+export class XpediteWelcome2 extends UmbLitElement {
   @state()
   refreshToken: string = "FirstLoad";
 
@@ -38,13 +38,10 @@ export class XpediteWelcome extends UmbLitElement {
   #renderWelcome(config: ConfigModel | undefined) {
     console.log("renderWelcome", config);
 
-    return html` 
-    <div class="logo"><img src=${logo} alt="XPEDITE logo" /></div>
-
-      <div class="welcome">
-        <h1 class="in-progress uui-font">You are a few steps away...</h1>
-        ${this.#renderSuccess(config)} ${this.#renderInProgress(config)}
-      </div>`;
+    return html` <div class="welcome uui-text">
+      <div class="logo"><img src=${logo} alt="XPEDITE logo" /></div>
+      ${this.#renderSuccess(config)} ${this.#renderInProgress(config)}
+    </div>`;
   }
 
   #renderSuccess(config: ConfigModel | undefined) {
@@ -53,25 +50,24 @@ export class XpediteWelcome extends UmbLitElement {
     }
 
     return html`
-      <img src=${logo} alt="XPEDITE logo" />
-
       <div>
         <div class="logo-title">
+          <img src=${logo} alt="XPEDITE logo" />
           <h2 class="success">You are completely set up!</h2>
         </div>
 
         <ul class="info">
           <li>
-            <h3>
+            <h5>
               Your templates folder:
               <code class="file-path">${config.templatesRootFolderPath}</code>
-            </h3>
+            </h5>
           </li>
           <li>
-            <h3>
+            <h5>
               Your codebase Src folder:
               <code class="file-path">${config.codebaseSrcPath}</code>
-            </h3>
+            </h5>
           </li>
         </ul>
       </div>
@@ -85,7 +81,7 @@ export class XpediteWelcome extends UmbLitElement {
 
     return html`
       <div>
-        <!-- <h2 class="in-progress">You are a few steps away...</h2> -->
+        <h3 class="in-progress">You are a few steps away...</h3>
         <ol class="steps">
           ${this.#renderDeliveryApiInstallStep(config)} ${this.#renderDeliveryApiStep(config)} ${this.#renderNextJsStep(config)}
           ${this.#renderSrcDirectoryStep(config)} ${this.#renderTestingStep(config)} ${this.#renderDotEnvStep(config)}
@@ -100,7 +96,7 @@ export class XpediteWelcome extends UmbLitElement {
 
     return html`
       <li class=${className}>
-        <h3>Install Delivery API in <code>Program.cs</code></h3>
+        <h5>Install Delivery API in <code>Program.cs</code></h5>
         <div class="help">
           <pre>
 builder.CreateUmbracoBuilder()
@@ -120,7 +116,7 @@ builder.CreateUmbracoBuilder()
 
     return html`
       <li class=${className}>
-        <h3>Enable Delivery API in <code>appsettings.json</code></h3>
+        <h5>Enable Delivery API in <code>appsettings.json</code></h5>
         <div class="help">
           <pre>
 "Umbraco": {
@@ -144,7 +140,7 @@ builder.CreateUmbracoBuilder()
 
     return html`
       <li class=${className}>
-        <h3>Run <code>npx create-next-app@latest</code> in the directory where you want to create your headless Next.js app.</h3>
+        <h5>Run <code>npx create-next-app@latest</code> in the directory where you want to create your headless Next.js app.</h5>
         <div class="help">
           <p>
             Visit the <a href="https://nextjs.org/docs/app/getting-started/installation" target="_blank">Next.js documentation</a> for options. The
@@ -170,9 +166,9 @@ builder.CreateUmbracoBuilder()
 
     return html`
       <li class=${className}>
-        <h3>
+        <h5>
           Configure your codebase Src directory in <code>appsettings.Development.json</code> and ensure that this website has access to the folder.
-        </h3>
+        </h5>
         <div class="help">
           <pre>
 "Xpedite": {
@@ -189,7 +185,7 @@ builder.CreateUmbracoBuilder()
 
     return html`
       <li class=${className}>
-        <h3>Install the testing dependencies Jest and React Testing Library</h3>
+        <h5>Install the testing dependencies Jest and React Testing Library</h5>
         <div class="help">
           <pre>npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node</pre>
           <pre>
@@ -239,7 +235,7 @@ export default createJestConfig(config)</pre
 
     return html`
       <li class=${className}>
-        <h3>Add and publish content.</h3>
+        <h5 class="uui-lead">Add and publish content.</h5>
         <div class="help">
           <p>If you are creating your document types and pages from scratch, make sure that they are published.</p>
           <p>Why not use the XPEDITE starter kit to add a basic structure using <code>dotnet add XPEDITE.StarterKit</code>?</p>
@@ -253,7 +249,7 @@ export default createJestConfig(config)</pre
 
     return html`
       <li class=${className}>
-        <h3>Add a <code>.env</code> file to the root of your Next.js project folder.</h3>
+        <h5>Add a <code>.env</code> file to the root of your Next.js project folder.</h5>
         <div class="help">
           <p><button @click=${() => this.#createDotEnv()}>Automatically add .env file</button> or add the following to an existing file:</p>
           <pre>
@@ -278,7 +274,7 @@ UMBRACO_HOME_ITEM={Your home page}
 
     return html`
       <li class=${className}>
-        <h3>Install XPEDITE types and example components to your codebase</h3>
+        <h5>Install XPEDITE types and example components to your codebase</h5>
         <div class="help">
           <button>Automatically copy files to codebase</button> or copy the files you want manually from the app_plugins folder of this Umbraco
           instance.
@@ -291,42 +287,17 @@ UMBRACO_HOME_ITEM={Your home page}
     UmbTextStyles,
     css`
       :host {
-      }
-
-      .logo {
+        display: block;
         text-align: center;
-        margin-bottom: -67px;
-
-        img {
-          display: inline-block;
-          max-height: 80px;
-        }
-      }
-
-      .in-progress {
-        color: white;
-        background: linear-gradient(90deg, #ccc480, #ccc0a6, #ccc480);
-        background: linear-gradient(to top right, #31add3, #6dddd4, #d4f5d0);
-        /* background: linear-gradient(to top right, #056684 33%, #2B9088, #92C88C); */
-        /* background: linear-gradient(to top right, #056684 66%, #2B9088); */
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-transform: uppercase;
-        text-align: center;
-        padding: 1.5rem;
-        margin: 0;
-        margin-top: 36px;
-        /* font-weight: bold; */
-        border-radius: var(--uui-border-radius, 3px);
+        border: 2px dashed var(--uui-color-border-emphasis);
+        padding: var(--uui-size-space-5);
+        padding-top: var(--uui-size-space-6);
+        border-radius: var(--uui-size-space-2);
       }
 
       .welcome {
-        background: linear-gradient(to top right, #090223 66%, #210223);
-        background: linear-gradient(to top right, #001111, #011b1b);
-
-        border-top: 15px solid #2b9088;
-        /* border-top: 10px solid transparent;
-        border-image: linear-gradient(to top left, #056684 50%, #2b9088, #92c88c) 1; */
+        /* background: linear-gradient(to top right, #090223 66%, #210223); */
+        /* background: linear-gradient(to top right, #001a1a, #012424); */
 
         display: flex;
         flex-direction: column;
@@ -335,9 +306,8 @@ UMBRACO_HOME_ITEM={Your home page}
         text-align: center;
         padding: 1rem;
         margin-bottom: 2rem;
-        box-shadow: var(--uui-shadow-depth-1, 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24));
-        border-radius: var(--uui-border-radius, 3px);
-        border-radius: 30px;
+        /* box-shadow: var(--uui-shadow-depth-1, 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24));
+        border-radius: var(--uui-border-radius, 3px); */
 
         a {
           color: #80ccb5;
@@ -358,29 +328,36 @@ UMBRACO_HOME_ITEM={Your home page}
           }
         }
 
-        .logo-title {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
+        .logo {
           img {
+            display: block;
             max-height: 100px;
-          }
-
-          h2 {
           }
         }
 
-        h2 {
+        .logo-title{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img{
+                max-height: 100px;
+            }
+
+            h2{
+
+            }
+        }
+
+        /* h2 {
           font-size: 2rem;
           height: auto;
           line-height: normal;
-        }
+        } */
 
         .success {
           color: #80ccb5;
           background: linear-gradient(90deg, #80ccb5, #a8cca6, #80ccb5);
-          background: linear-gradient(to top right, #056684, #2b9088, #92c88c);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
@@ -391,11 +368,11 @@ UMBRACO_HOME_ITEM={Your home page}
           list-style-type: none;
 
           li {
-            h3 {
+            h5 {
             }
 
             .file-path {
-              display: block;
+                display: block;
               font-size: 10px;
               background: rgba(0, 0, 0, 0.75);
               padding: 0.25rem 0.5rem;
@@ -404,8 +381,15 @@ UMBRACO_HOME_ITEM={Your home page}
           }
         }
 
+        .in-progress {
+          /* color: #ccc480;
+          background: linear-gradient(90deg, #ccc480, #ccc0a6, #ccc480);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent; */
+        }
+
         .steps {
-          color: white;
+          /* color: white; */
           text-align: left;
 
           li {
@@ -413,19 +397,20 @@ UMBRACO_HOME_ITEM={Your home page}
 
             code,
             pre {
-              background: black;
+              color: #eee;
+              background: #222;
               border: 1px solid rgba(255, 255, 255, 0.25);
             }
 
             code {
-              padding: 5px;
+              padding: 1px 5px;
             }
 
             pre {
               padding: 10px;
             }
 
-            h3 {
+            h5 {
             }
 
             .help {
@@ -434,7 +419,14 @@ UMBRACO_HOME_ITEM={Your home page}
             &.done {
               padding-bottom: 0;
 
-              h3 {
+              code{
+                color: inherit;
+              background: none;
+              border: none;
+              padding: 0;
+              }
+
+              h5 {
                 text-decoration: line-through;
                 opacity: 0.5;
               }
@@ -450,10 +442,10 @@ UMBRACO_HOME_ITEM={Your home page}
   ];
 }
 
-export default XpediteWelcome;
+export default XpediteWelcome2;
 
 declare global {
   interface HTMLElementTagNameMap {
-    "xpedite-welcome": XpediteWelcome;
+    "xpedite-welcome2": XpediteWelcome2;
   }
 }

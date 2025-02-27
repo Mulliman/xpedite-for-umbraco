@@ -2,7 +2,7 @@ import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
-import { partialsDescription, partialsIcon } from "./info.blocks";
+import { blocksDescription, blocksIcon } from "./info.blocks";
 
 @customElement("xpedite-blocks-guide")
 export class XpediteBlocksGuide extends UmbElementMixin(LitElement) {
@@ -17,11 +17,11 @@ export class XpediteBlocksGuide extends UmbElementMixin(LitElement) {
 
         <p>Simply complete a couple of sections and your auto generated headless component will appear here.</p>
 
-        <uui-icon name=${partialsIcon}></uui-icon>
+        <uui-icon name=${blocksIcon}></uui-icon>
         <h3 class="heading-below-icon">What is a block?</h3>
 
         <p class="uui-lead">
-          ${partialsDescription}
+          ${blocksDescription}
         </p>
 
         <p>

@@ -5,6 +5,8 @@ import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import "@umbraco-cms/backoffice/code-editor";
 import { IGeneratorInfo } from "../IGeneratorInfo";
 
+import './big-card';
+
 @customElement("xpedite-generator-card")
 export class XpediteGeneratorCard extends UmbLitElement {
 
@@ -19,9 +21,15 @@ export class XpediteGeneratorCard extends UmbLitElement {
     if (!this.value) return null;
 
     return html`
-      <uui-card-block-type name=${this.value.name} description=${this.value.description} href=${this.value.url}>
+      <xpedite-big-card name=${this.value.name} description=${this.value.description} href=${this.value.url}>
+        <uui-icon name=${this.value.icon} style="color: #92C98C"></uui-icon>
+      </xpedite-big-card>
+    `;
+
+    return html`
+      <uui-big-card name=${this.value.name} description=${this.value.description} href=${this.value.url} background="#92C98C">
         <uui-icon name=${this.value.icon}></uui-icon>
-      </uui-card-block-type>
+      </uui-big-card>
     `;
   }
 
@@ -30,6 +38,12 @@ export class XpediteGeneratorCard extends UmbLitElement {
     css`
       :host {
       }
+
+      uui-icon {
+        font-size: 3rem;
+      }
+
+      
     `,
   ];
 }
