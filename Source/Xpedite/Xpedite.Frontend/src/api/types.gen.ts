@@ -5,6 +5,7 @@ export type ConfigModel = {
     isDeliveryApiEnabled: boolean;
     codebaseSrcPath?: string | null;
     templatesRootFolderPath?: string | null;
+    readonly isNextJsInstalled?: boolean | null;
     isReactTestingInstalled?: boolean | null;
     isXpediteTypescriptCodeInstalled?: boolean | null;
     isEnvFileInstalled?: boolean | null;

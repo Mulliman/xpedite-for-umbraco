@@ -10,6 +10,8 @@
 
         public string? TemplatesRootFolderPath { get; set; }
 
+        public bool? IsNextJsInstalled { get; internal set; }
+
         public bool? IsReactTestingInstalled { get; set; }
 
         public bool? IsXpediteTypescriptCodeInstalled { get; set; }
@@ -25,7 +27,5 @@
             && IsXpediteTypescriptCodeInstalled == true
             && IsContentInPlace
             && IsEnvFileInstalled == true;
-
-        
     }
 }

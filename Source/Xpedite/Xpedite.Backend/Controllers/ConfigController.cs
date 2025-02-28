@@ -49,6 +49,7 @@ namespace Xpedite.Backend.Controllers
                 IsDeliveryApiInstalled = IsDeliveryApiInstalled(),
                 IsDeliveryApiEnabled = _deliveryApiSettings.Value?.Enabled ?? false,
                 IsXpediteTypescriptCodeInstalled = DoesFileExistInSrcFolder("umbraco\\types.ts"),
+                IsNextJsInstalled = DoesFileExistInSrcFolder("..\\next.config.ts"),
                 IsReactTestingInstalled = DoesFileExistInSrcFolder("..\\jest.config.ts"),
                 IsEnvFileInstalled = DoesFileExistInSrcFolder("..\\.env"),
                 IsContentInPlace = IsUmbracoContentPublished()

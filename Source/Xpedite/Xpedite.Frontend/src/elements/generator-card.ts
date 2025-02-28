@@ -25,12 +25,6 @@ export class XpediteGeneratorCard extends UmbLitElement {
         <uui-icon name=${this.value.icon} style="color: #92C98C"></uui-icon>
       </xpedite-big-card>
     `;
-
-    return html`
-      <uui-big-card name=${this.value.name} description=${this.value.description} href=${this.value.url} background="#92C98C">
-        <uui-icon name=${this.value.icon}></uui-icon>
-      </uui-big-card>
-    `;
   }
 
   static override styles = [
