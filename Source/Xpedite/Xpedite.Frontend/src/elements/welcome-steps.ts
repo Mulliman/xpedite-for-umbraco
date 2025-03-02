@@ -1,7 +1,6 @@
-import { css, html, customElement, property, state } from "@umbraco-cms/backoffice/external/lit";
+import { css, html, customElement, property } from "@umbraco-cms/backoffice/external/lit";
 import { UmbLitElement } from "@umbraco-cms/backoffice/lit-element";
 import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
-import { Task } from "@lit/task";
 
 import "./create-button";
 
@@ -9,8 +8,6 @@ import { XpediteStyles } from "../styles";
 import { ConfigModel, V1Service } from "../api";
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
 import { lightGreenCss, mainGreenCss, mainGreenTranslucentCss } from "../styles/colours";
-import { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
-import { UmbContextConsumerController } from "@umbraco-cms/backoffice/context-api";
 import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
 
 @customElement("xpedite-welcome-steps")
@@ -326,7 +323,6 @@ UMBRACO_HOME_ITEM={Your home page}</pre
               &::before {
                 content: counter(step-counter) '. Pending earlier step';
                 background: ${mainGreenTranslucentCss};
-                /* background: #030303; */
               }
             }
 

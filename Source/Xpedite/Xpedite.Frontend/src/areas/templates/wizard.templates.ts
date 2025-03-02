@@ -10,6 +10,9 @@ import "../../elements/field-picker";
 import { GenerateApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpediteTemplatesContext, { TEMPLATES_CONTEXT_TOKEN } from "./context.templates";
+import { XpediteStyles } from "../../styles";
+import { templatesIcon } from "./info.templates";
+import { templatesColour } from "../../styles/colours";
 
 @customElement("xpedite-templates-wizard")
 export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
@@ -20,6 +23,9 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
 
   @state()
   _selectedFields: Array<string> = [];
+
+  @state()
+  _blueprints: string[] = [];
 
   constructor() {
     super();
@@ -35,22 +41,31 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     }
 
     const data = {
-        documentTypeId: this._chosenContentType,
-        selectedProperties: this._selectedFields,
+      documentTypeId: this._chosenContentType,
+      selectedProperties: this._selectedFields,
     } as GenerateApiModel;
 
     return data;
   }
 
-  #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
+  #resetState() {
+    this._blueprints = [];
+    this._chosenContentType = undefined;
+    this._selectedFields = [];
+    this.#context?.clearApiModel();
+  }
+
+  async #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
     const selectedType = event.target.selection[0];
 
     if (selectedType) {
       this._chosenContentType = selectedType;
+
+      if (this.#context) {
+        this._blueprints = await this.#context.getDefinedBlueprintIds(this._chosenContentType);
+      }
     } else {
-      this._chosenContentType = undefined;
-      this._selectedFields = [];
-      this.#context?.clearApiModel();
+      this.#resetState();
     }
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
@@ -62,7 +77,7 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
 
     const newModel = this.#createApiModel();
 
-    if(newModel){
+    if (newModel) {
       this.#context?.updateApiModel(newModel);
     }
   }
@@ -94,11 +109,52 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     `;
   }
 
-  render() {
-    return html` <div>${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()}</div> `;
+  #renderSmartActions() {
+    if (!this._chosenContentType) {
+      return html`<p>Select a document type for more options</p>`;
+    }
+
+    
+    return html`<div class="x-actions">${this.#getBlueprintAction()}</div>`;
   }
 
-  static styles = [UmbTextStyles, css``];
+  #getBlueprintAction(){
+    if(!this._blueprints?.length){
+      return html`<div><uui-icon name="icon-alert"></uui-icon><span>No blueprint created</span><button class="x-button-secondary">Create</button></div>`;
+    }
+
+    console.log("getBlueprintAction", this._blueprints);
+
+    if(this._blueprints.length > 1){
+      return html`<div><uui-icon name="icon-check"></uui-icon><span>Has multiple blueprints configured</span></div>`;
+    }
+
+    const singleId = this._blueprints[0];
+    const linkUrl = `/umbraco/section/settings/workspace/document-blueprint/edit/${singleId}/invariant/tab/content`;
+
+    return html`<div><uui-icon name="icon-check"></uui-icon><span>Has blueprint configured</span><a href=${linkUrl} target="_blank" class="x-button-tertiary">Open</a></div>`;
+  }
+
+  //x-text-gradient-light
+  // style="background: ${templatesColour} uui-text
+
+  render() {
+    return html`
+      <div>
+        <div class="secondary-container ">
+          <div class="heading">
+            <!-- <h3 class="">Templates</h3> -->
+            <h2 class="x-text-gradient-light uui-font">Templates Assistant</h2>
+            <uui-icon name=${templatesIcon}></uui-icon>
+          </div>
+          <div class="content">${this.#renderSmartActions()}</div>
+        </div>
+        ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()}
+      </div>
+    `;
+  }
+
+  static styles = [UmbTextStyles, XpediteStyles, css``];
 }
 
 export default XpediteTemplatesWizard;

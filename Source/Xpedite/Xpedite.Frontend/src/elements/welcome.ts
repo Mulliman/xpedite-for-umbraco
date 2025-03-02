@@ -57,9 +57,9 @@ export class XpediteWelcome extends UmbLitElement {
   }
 
   #renderSuccess(config: ConfigModel | undefined) {
-    // if (!config || !config.isComplete) {
-    //   return;
-    // }
+    if (!config || !config.isComplete) {
+      return;
+    }
 
     return html`
       <h1 class="x-text-gradient-light uui-font">Create a component</h1>

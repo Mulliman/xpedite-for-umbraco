@@ -18,7 +18,7 @@ export class XpediteStartDashboard extends UmbElementMixin(LitElement) {
   }
   
   render() {
-    var generators = this.generators.map((generator) => html`<div class="card"><xpedite-generator-card .value=${generator}></xpedite-generator-card></div>`);
+    var generators = this.generators.map((generator) => html`<xpedite-generator-card .value=${generator}></xpedite-generator-card>`);
 
     return html`
       <umb-body-layout>
@@ -35,8 +35,9 @@ export class XpediteStartDashboard extends UmbElementMixin(LitElement) {
       display: flex;
       flex-wrap: nowrap;
       gap: 16px;
+      align-items: stretch;
 
-      .card{
+      xpedite-generator-card{
         flex-basis: 33.33%; 
       }
     }

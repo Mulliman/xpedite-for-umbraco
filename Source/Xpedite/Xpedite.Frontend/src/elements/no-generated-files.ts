@@ -25,7 +25,7 @@ export class XpediteNoGeneratedFiles extends UmbLitElement {
         border: 2px dashed var(--uui-color-border-emphasis);
         padding: var(--uui-size-space-5);
         padding-top: var(--uui-size-space-6);
-        border-radius: var(--uui-size-space-2);
+        border-radius: var(--uui-size-space-4);
       }
     `,
   ];

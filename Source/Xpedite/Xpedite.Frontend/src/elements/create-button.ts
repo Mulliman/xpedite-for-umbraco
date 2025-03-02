@@ -10,6 +10,9 @@ export class XpediteCreateButton extends UmbLitElement {
   @property({ type: Object })
   public value: IGeneratorInfo;
 
+  @property({ type: Boolean})
+  public isSmall: boolean = false;
+
   constructor(value: IGeneratorInfo) {
     super();
 
@@ -21,9 +24,11 @@ export class XpediteCreateButton extends UmbLitElement {
   override render() {
     if (!this.value) return null;
 
+    const icon = this.isSmall ? html`` : html`<uui-icon name=${this.value.icon}></uui-icon>`;
+
     return html`
-      <a href=${this.value.url} style="background:linear-gradient(to top right, #318487, ${this.value.colour})">
-        <uui-icon name=${this.value.icon} style="font-size: 1.6rem"></uui-icon>Create ${this.value.name.slice(0, -1)}<uui-icon name="icon-arrow-right"></uui-icon>
+      <a href=${this.value.url} class=${this.isSmall && "small"} style="background:linear-gradient(to top right, #318487, ${this.value.colour})">
+        ${icon}Create ${this.value.name.slice(0, -1)}<uui-icon name="icon-arrow-right"></uui-icon>
       </a>
     `;
   }
@@ -51,11 +56,22 @@ static override styles = [
 
             uui-icon {
                 margin: 0 10px;
+                font-size: 1.6rem
             }
 
             &:hover {
                 background: #206063 !important;
                 color: white;
+            }
+
+            &.small{
+              padding: 10px;
+              margin: 0;
+              
+              uui-icon {                
+                font-size: 1rem;
+                
+              }
             }
         }
     `,

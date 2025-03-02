@@ -10,19 +10,19 @@ const section : ManifestSection = {
   type: 'section',
   meta: {
       label: 'XPEDITE',
-      pathname: 'xpedite'
-  }
+      pathname: 'xpedite',
+  },
 }
 
 const manifests = [
   section,
   ...startManifests,
-  ...blockManifests,
-  ...blocksContextManifests,
   ...templatesManifests,
   ...templatesContextManifests,
   ...partialsManifests,
-  ...partialsContextManifests
+  ...partialsContextManifests,
+  ...blockManifests,
+  ...blocksContextManifests,
 ];
 
 export default manifests;
