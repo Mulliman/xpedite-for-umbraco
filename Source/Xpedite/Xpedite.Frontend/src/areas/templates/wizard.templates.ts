@@ -7,16 +7,19 @@ import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 
 import "../../elements/field-picker";
 
-import { GenerateApiModel } from "../../api";
+import { CheckResult, GenerateApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpediteTemplatesContext, { TEMPLATES_CONTEXT_TOKEN } from "./context.templates";
 import { XpediteStyles } from "../../styles";
 import { templatesIcon } from "./info.templates";
-import { templatesColour } from "../../styles/colours";
+import XpediteTemplatesAssistantContext, { TEMPLATES_ASSISTANT_CONTEXT_TOKEN } from "./context.templatesAssistant";
+import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
 
 @customElement("xpedite-templates-wizard")
 export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
   #context?: XpediteTemplatesContext;
+  #assistantContext?: XpediteTemplatesAssistantContext;
+  #notificationContext?: typeof UMB_NOTIFICATION_CONTEXT.TYPE;
 
   @state()
   _chosenContentType: string | undefined;
@@ -25,13 +28,29 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
   _selectedFields: Array<string> = [];
 
   @state()
-  _blueprints: string[] = [];
+  _checks: Array<CheckResult> | undefined;
 
   constructor() {
     super();
 
     this.consumeContext(TEMPLATES_CONTEXT_TOKEN, (context) => {
       this.#context = context;
+    });
+
+    this.consumeContext(TEMPLATES_ASSISTANT_CONTEXT_TOKEN, (context) => {
+      this.#assistantContext = context;
+
+      this.observe(this.#assistantContext?.checks, (x) => {
+        this._checks = x;
+      });
+    });
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.consumeContext(UMB_NOTIFICATION_CONTEXT, (instance) => {
+      this.#notificationContext = instance;
     });
   }
 
@@ -49,10 +68,10 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
   }
 
   #resetState() {
-    this._blueprints = [];
     this._chosenContentType = undefined;
     this._selectedFields = [];
     this.#context?.clearApiModel();
+    this.#assistantContext?.clearApiModel();
   }
 
   async #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
@@ -61,8 +80,8 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     if (selectedType) {
       this._chosenContentType = selectedType;
 
-      if (this.#context) {
-        this._blueprints = await this.#context.getDefinedBlueprintIds(this._chosenContentType);
+      if (this.#assistantContext) {
+        this.#assistantContext.updateApiModel({ documentTypeId: selectedType });
       }
     } else {
       this.#resetState();
@@ -114,25 +133,53 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
       return html`<p>Select a document type for more options</p>`;
     }
 
-    
-    return html`<div class="x-actions">${this.#getBlueprintAction()}</div>`;
+    if (!this._checks) {
+      return html`<p>No suggestions at this time</p>`;
+    }
+
+    const actions = this._checks.map((c) => this.#createAction(c));
+
+    return html`<div class="x-actions">${actions}</div>`;
   }
 
-  #getBlueprintAction(){
-    if(!this._blueprints?.length){
-      return html`<div><uui-icon name="icon-alert"></uui-icon><span>No blueprint created</span><button class="x-button-secondary">Create</button></div>`;
+  #createAction(action: CheckResult) {
+    const iconName = action?.isOk ? "icon-check" : "icon-alert";
+    const icon = html`<uui-icon name=${iconName}></uui-icon>`;
+    const text = html`<span>${action?.message}</span>`;
+    const buttonOrLink = this.#createButtonOrLink(action);
+
+    return html`<div>${icon}${text}${buttonOrLink}</div>`;
+  }
+
+  #createButtonOrLink(action: CheckResult) {
+    if (!action || !action?.actionButtonText) {
+      return null;
     }
 
-    console.log("getBlueprintAction", this._blueprints);
-
-    if(this._blueprints.length > 1){
-      return html`<div><uui-icon name="icon-check"></uui-icon><span>Has multiple blueprints configured</span></div>`;
+    if (action.actionUrl) {
+      return html`<a href=${action.actionUrl} target="_blank" class="x-button-tertiary">${action.actionButtonText}</a>`;
     }
 
-    const singleId = this._blueprints[0];
-    const linkUrl = `/umbraco/section/settings/workspace/document-blueprint/edit/${singleId}/invariant/tab/content`;
+    if (action.actionName) {
+      return html`<button @click=${() => this.#handleAction(action.actionName!)} class="x-button-secondary">${action.actionButtonText}</button>`;
+    }
 
-    return html`<div><uui-icon name="icon-check"></uui-icon><span>Has blueprint configured</span><a href=${linkUrl} target="_blank" class="x-button-tertiary">Open</a></div>`;
+    return null;
+  }
+
+  async #handleAction(actionName: string) {
+    if (this.#assistantContext) {
+      await this.#assistantContext.runAction(actionName);
+
+      if(this.#notificationContext){
+        this.#notificationContext.peek("positive", {
+          data: {
+            headline: "Success",
+            message: "Action completed"
+          }
+        });
+      }
+    }
   }
 
   //x-text-gradient-light
@@ -145,7 +192,7 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
           <div class="heading">
             <!-- <h3 class="">Templates</h3> -->
             <h2 class="x-text-gradient-light uui-font">Templates Assistant</h2>
-            <uui-icon name=${templatesIcon}></uui-icon>
+            <uui-icon name="icon-wand"></uui-icon>
           </div>
           <div class="content">${this.#renderSmartActions()}</div>
         </div>

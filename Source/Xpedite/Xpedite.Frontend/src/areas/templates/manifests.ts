@@ -26,5 +26,11 @@ export const templatesContextManifests : Array<ManifestGlobalContext> = [
         alias: 'xpedite.templates.context',
         name: 'xpedite templates context',
         js: () => import('./context.templates.ts')
+    },
+    {
+        type: 'globalContext',
+        alias: 'xpedite.templatesAssistant.context',
+        name: 'xpedite templates assistant context',
+        js: () => import('./context.templatesAssistant.ts')
     }
 ]

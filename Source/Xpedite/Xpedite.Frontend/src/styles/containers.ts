@@ -89,6 +89,7 @@ export const ContainerStyles = [
             flex-direction: row;
             align-items: center;
             width:100%;
+            margin-top: 0.5rem;
 
             uui-icon{
                 font-size: 1.5rem;
@@ -104,12 +105,6 @@ export const ContainerStyles = [
                 margin-left: auto;
             }
         }
-
-        
-
-        
-
-
     }
   `,
 ];

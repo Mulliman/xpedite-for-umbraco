@@ -5,14 +5,10 @@ import { UmbDataSourceResponse } from "@umbraco-cms/backoffice/repository";
 import { Observable, UmbObjectState } from "@umbraco-cms/backoffice/observable-api";
 import { umbConfirmModal } from "@umbraco-cms/backoffice/modal";
 import { debounce } from "@umbraco-cms/backoffice/utils";
-import { UmbDocumentItemRepository } from "@umbraco-cms/backoffice/document";
-import {
-	UmbDocumentBlueprintItemRepository,
-	type UmbDocumentBlueprintItemBaseModel,
-} from '@umbraco-cms/backoffice/document-blueprint';
 
 export default abstract class CodeGeneratorContext<T> extends UmbControllerBase {
   #apiModel?: T;
+
   public get apiModel(): T | undefined { return this.#apiModel; }
 
   #generatedFiles = new UmbObjectState<GeneratedFiles | undefined>(undefined);
@@ -20,24 +16,21 @@ export default abstract class CodeGeneratorContext<T> extends UmbControllerBase 
     return this.#generatedFiles.asObservable();
   }
 
-  #documentItemRepository = new UmbDocumentItemRepository(this);
-	#documentBlueprintItemRepository = new UmbDocumentBlueprintItemRepository(this);
-
   constructor(host: UmbControllerHost) {
     super(host);
   }
 
-  async getDefinedBlueprintIds(documentTypeUnique: string){
-    const result = await this.#documentBlueprintItemRepository.requestItemsByDocumentType(documentTypeUnique);
+  // async getDefinedBlueprintIds(documentTypeUnique: string){
+  //   const result = await this.#documentBlueprintItemRepository.requestItemsByDocumentType(documentTypeUnique);
     
-    if (!result || !result.data) {
-      return [];
-    }
+  //   if (!result || !result.data) {
+  //     return [];
+  //   }
 
-    console.log("blue data", result.data);
+  //   console.log("blue data", result.data);
 
-    return result.data?.map(d => d.unique);
-  }
+  //   return result.data?.map(d => d.unique);
+  // }
 
   hasDocumentationPage(){
     // this.#documentItemRepository.

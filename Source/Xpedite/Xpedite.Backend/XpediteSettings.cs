@@ -15,6 +15,12 @@ public class XpediteSettings(IWebHostEnvironment hostingEnvironment, IOptions<Xp
         : Path.Combine([_hostingEnvironment.ContentRootPath, "wwwroot", "app_plugins", "Xpedite.Frontend", "default-templates", "NextJs"]);
 
     public bool AutoAddSectionToAdminUser => _xpediteSettings.Value?.AutoAddSectionToAdminUser ?? true;
+
+    public string DocumentationDocumentTypeAlias => _xpediteSettings.Value?.DocumentationDocumentTypeAlias ?? "documentationPage";
+
+    public string DocumentationTemplatesSubfolder => _xpediteSettings.Value?.DocumentationTemplatesSubfolder ?? "Page Templates";
+
+    public string DocumentationBlocksSubfolder => _xpediteSettings.Value?.DocumentationBlocksSubfolder ?? "Blocks";
 }
 
 public class Xpedite
@@ -24,4 +30,10 @@ public class Xpedite
     public string? TemplatesRootFolderPath { get; set; }
 
     public bool? AutoAddSectionToAdminUser { get; set; }
+
+    public string? DocumentationDocumentTypeAlias { get; set; }
+
+    public string? DocumentationTemplatesSubfolder { get; set; }
+
+    public string? DocumentationBlocksSubfolder { get; set; }
 }

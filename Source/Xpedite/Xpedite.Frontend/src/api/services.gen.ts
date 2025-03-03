@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { PostApiV1XpediteAddEnvFileResponse, PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
+import type { PostApiV1XpediteAddEnvFileResponse, PostApiV1XpediteAssistantTemplateActionData, PostApiV1XpediteAssistantTemplateActionResponse, PostApiV1XpediteAssistantTemplateChecksData, PostApiV1XpediteAssistantTemplateChecksResponse, PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
 
 export class V1Service {
     /**
@@ -15,6 +15,42 @@ export class V1Service {
             method: 'POST',
             url: '/api/v1/xpedite/add-env-file',
             responseHeader: 'Umb-Notifications',
+            errors: {
+                401: 'The resource is protected and requires an authentication token'
+            }
+        });
+    }
+    
+    /**
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown OK
+     * @throws ApiError
+     */
+    public static postApiV1XpediteAssistantTemplateAction(data: PostApiV1XpediteAssistantTemplateActionData = {}): CancelablePromise<PostApiV1XpediteAssistantTemplateActionResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xpedite/assistant-template-action',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: 'The resource is protected and requires an authentication token'
+            }
+        });
+    }
+    
+    /**
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown OK
+     * @throws ApiError
+     */
+    public static postApiV1XpediteAssistantTemplateChecks(data: PostApiV1XpediteAssistantTemplateChecksData = {}): CancelablePromise<PostApiV1XpediteAssistantTemplateChecksResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xpedite/assistant-template-checks',
+            body: data.requestBody,
+            mediaType: 'application/json',
             errors: {
                 401: 'The resource is protected and requires an authentication token'
             }

@@ -3,6 +3,8 @@ using System.Configuration;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Services;
+using Xpedite.Backend.Assistant.Blueprints;
+using Xpedite.Backend.Assistant.Documentation;
 using Xpedite.Backend.Codebase;
 using Xpedite.Backend.InputMappers;
 using Xpedite.Backend.Security;
@@ -20,6 +22,10 @@ public class ServiceComposer : IComposer
         builder.Services.AddScoped<TemplateMapper>();
         builder.Services.AddScoped<PartialMapper>();
         builder.Services.AddScoped<BlockMapper>();
+
+        // Assistant
+        builder.Services.AddScoped<BlueprintAssistant>();
+        builder.Services.AddScoped<TemplateDocumentationAssistant>();
 
         builder.Services.Configure<Xpedite>(builder.Config.GetSection("Xpedite"));
 
