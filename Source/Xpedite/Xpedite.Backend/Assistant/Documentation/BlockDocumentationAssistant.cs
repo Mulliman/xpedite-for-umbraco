@@ -6,7 +6,7 @@ namespace Xpedite.Backend.Assistant.Documentation
     public class BlockDocumentationAssistant(IContentService contentService,
         IContentEditingService contentEditingService,
         IContentTypeService contentTypeService,
-        XpediteSettings settings) : DocumentationAssistantBase<CheckInput, ActionInput>(contentService, contentEditingService, contentTypeService, settings)
+        XpediteSettings settings) : DocumentationAssistantBase<BlockCheckInput, BlockActionInput>(contentService, contentEditingService, contentTypeService, settings)
     {
         public override string ActionName => "createBlockDocumentation";
 

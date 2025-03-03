@@ -8,7 +8,7 @@ import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import "../../elements/assistant";
 import "../../elements/field-picker";
 
-import { CheckResult, GenerateBlockApiModel } from "../../api";
+import { BlockCheckInput, CheckResult, GenerateBlockApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpediteBlocksContext, { BLOCKS_CONTEXT_TOKEN } from "./context.blocks";
 import XpediteBlocksAssistantContext, { BLOCKS_ASSISTANT_CONTEXT_TOKEN } from "./context.blocksAssistant";
@@ -69,7 +69,7 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    
+
     this.#context?.clearApiModel();
     this.#assistantContext?.clearApiModel();
   }
@@ -90,6 +90,24 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     return data;
   }
 
+  #updateAssistant() {
+    if (!this.#assistantContext) {
+      return;
+    }
+
+    if (!this._chosenContentType) {
+      this.#assistantContext.clearApiModel();
+      return;
+    }
+
+    var model = {
+      documentTypeId: this._chosenContentType,
+      settingsTypeId: this._chosenSettingsType,
+    } as BlockCheckInput;
+
+    this.#assistantContext.updateApiModel(model);
+  }
+
   #resetState() {
     this._chosenContentType = undefined;
     this._selectedFields = [];
@@ -102,13 +120,11 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
 
     if (selectedType) {
       this._chosenContentType = selectedType;
-
-      if (this.#assistantContext) {
-        this.#assistantContext.updateApiModel({ documentTypeId: selectedType });
-      }
     } else {
       this.#resetState();
     }
+    
+    this.#updateAssistant();
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
   }
@@ -145,6 +161,8 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
       this._chosenSettingsType = undefined;
       this._selectedSettings = [];
     }
+
+    this.#updateAssistant();
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
   }

@@ -6,12 +6,10 @@ using Umbraco.Cms.Api.Common.Attributes;
 using Umbraco.Cms.Api.Common.Filters;
 using Umbraco.Cms.Api.Management.Controllers;
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Security;
-using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.Authorization;
 using Xpedite.Backend.Assistant;
-using Xpedite.Backend.Assistant.Blueprints;
+using Xpedite.Backend.Assistant.BlockList;
 using Xpedite.Backend.Assistant.Documentation;
 
 namespace Xpedite.Backend.Controllers
@@ -24,19 +22,21 @@ namespace Xpedite.Backend.Controllers
     [Route("api/v{version:apiVersion}/xpedite")]
     public class AssistantBlockController(XpediteSettings settings,
         IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
-        BlockDocumentationAssistant blockDocumentationAssistant) : ManagementApiControllerBase
+        BlockDocumentationAssistant blockDocumentationAssistant,
+        BlockListAssistant blockListAssistant) : ManagementApiControllerBase
     {
         private readonly XpediteSettings _settings = settings;
         private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
         private readonly BlockDocumentationAssistant _blockDocumentationAssistant = blockDocumentationAssistant;
+        private readonly BlockListAssistant _blockListAssistant = blockListAssistant;
 
-        private List<IAssistantCheck<CheckInput>> Checks => [_blockDocumentationAssistant];
-        private List<IAssistantAction<ActionInput>> Actions => [_blockDocumentationAssistant];
+        private List<IAssistantCheck<BlockCheckInput>> Checks => [_blockDocumentationAssistant, _blockListAssistant];
+        private List<IAssistantAction<BlockActionInput>> Actions => [_blockDocumentationAssistant, _blockListAssistant];
 
         [HttpPost("assistant-block-checks")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(List<CheckResult>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CheckResult>>> TemplateChecks([FromBody] CheckInput input)
+        public async Task<ActionResult<List<CheckResult>>> TemplateChecks([FromBody] BlockCheckInput input)
         {
             List<CheckResult> checks = await GetChecks(input);
 
@@ -59,12 +59,12 @@ namespace Xpedite.Backend.Controllers
 
             await action.RunAction(input, CurrentUserKey(_backOfficeSecurityAccessor));
 
-            List<CheckResult> checks = await GetChecks(new CheckInput { DocumentTypeId = documentTypeId });
+            List<CheckResult> checks = await GetChecks(new BlockCheckInput { DocumentTypeId = documentTypeId });
 
             return Ok(checks);
         }
 
-        private async Task<List<CheckResult>> GetChecks(CheckInput input)
+        private async Task<List<CheckResult>> GetChecks(BlockCheckInput input)
         {
             var tasks = Checks.Select(c => c.RunCheck(input)).ToList();
             var results = await Task.WhenAll(tasks);
@@ -72,10 +72,9 @@ namespace Xpedite.Backend.Controllers
             return results.Where(r => r != null).Cast<CheckResult>().ToList();
         }
 
-        public class BlockActionInputModel : ActionInput
+        public class BlockActionInputModel : BlockActionInput
         {
             public string? ActionName { get; set; }
         }
-
     }
 }

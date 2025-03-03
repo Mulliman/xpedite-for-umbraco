@@ -4,6 +4,11 @@ import { backgroundGradientDark, ColourStyles, mainGreenCss } from "./colours";
 export const ContainerStyles = [
   ColourStyles,
   css`
+    .contrained{
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
     .primary-container {
       background: ${backgroundGradientDark};
       border: 10px solid ${mainGreenCss};

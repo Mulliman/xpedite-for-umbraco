@@ -8,6 +8,7 @@ import "../../elements/generator-card";
 import "../../elements/welcome";
 import PartialsInfo from "../partials/info.partials";
 import BlocksInfo from "../blocks/info.blocks";
+import { XpediteStyles } from "../../styles";
 
 @customElement("xpedite-start-dashboard")
 export class XpediteStartDashboard extends UmbElementMixin(LitElement) {
@@ -16,32 +17,35 @@ export class XpediteStartDashboard extends UmbElementMixin(LitElement) {
   constructor() {
     super();
   }
-  
+
   render() {
     var generators = this.generators.map((generator) => html`<xpedite-generator-card .value=${generator}></xpedite-generator-card>`);
 
     return html`
       <umb-body-layout>
-      <xpedite-welcome></xpedite-welcome>
-        <div class="generators-grid">
-          ${generators}
+        <div class="contrained">
+          <xpedite-welcome></xpedite-welcome>
+          <div class="generators-grid">${generators}</div>
         </div>
       </umb-body-layout>
     `;
   }
 
-  static styles = css`
-    .generators-grid{
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 16px;
-      align-items: stretch;
+  static styles = [
+    XpediteStyles,
+    css`
+      .generators-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 16px;
+        align-items: stretch;
 
-      xpedite-generator-card{
-        flex-basis: 33.33%; 
+        xpedite-generator-card {
+          flex-basis: 33.33%;
+        }
       }
-    }
-  `;
+    `,
+  ];
 }
 
 export default XpediteStartDashboard;

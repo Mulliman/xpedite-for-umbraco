@@ -7,7 +7,13 @@ export type ActionInputModel = {
 
 export type BlockActionInputModel = {
     documentTypeId: string;
+    settingsTypeId?: string | null;
     actionName?: string | null;
+};
+
+export type BlockCheckInput = {
+    documentTypeId: string;
+    settingsTypeId?: string | null;
 };
 
 export type CheckInput = {
@@ -88,7 +94,7 @@ export type PostApiV1XpediteAssistantBlockActionData = {
 export type PostApiV1XpediteAssistantBlockActionResponse = Array<(CheckResult)>;
 
 export type PostApiV1XpediteAssistantBlockChecksData = {
-    requestBody?: CheckInput;
+    requestBody?: BlockCheckInput;
 };
 
 export type PostApiV1XpediteAssistantBlockChecksResponse = Array<(CheckResult)>;

@@ -4,4 +4,9 @@
     {
         public Guid DocumentTypeId { get; set; }
     }
+
+    public class BlockActionInput : ActionInput
+    {
+        public Guid? SettingsTypeId { get; set; }
+    }
 }
