@@ -6,12 +6,12 @@ import { customElement, state } from "lit/decorators.js";
 import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 
 import "../../elements/field-picker";
+import "../../elements/assistant";
 
 import { CheckResult, GenerateApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpediteTemplatesContext, { TEMPLATES_CONTEXT_TOKEN } from "./context.templates";
 import { XpediteStyles } from "../../styles";
-import { templatesIcon } from "./info.templates";
 import XpediteTemplatesAssistantContext, { TEMPLATES_ASSISTANT_CONTEXT_TOKEN } from "./context.templatesAssistant";
 import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
 
@@ -128,74 +128,25 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     `;
   }
 
-  #renderSmartActions() {
-    if (!this._chosenContentType) {
-      return html`<p>Select a document type for more options</p>`;
-    }
-
-    if (!this._checks) {
-      return html`<p>No suggestions at this time</p>`;
-    }
-
-    const actions = this._checks.map((c) => this.#createAction(c));
-
-    return html`<div class="x-actions">${actions}</div>`;
-  }
-
-  #createAction(action: CheckResult) {
-    const iconName = action?.isOk ? "icon-check" : "icon-alert";
-    const icon = html`<uui-icon name=${iconName}></uui-icon>`;
-    const text = html`<span>${action?.message}</span>`;
-    const buttonOrLink = this.#createButtonOrLink(action);
-
-    return html`<div>${icon}${text}${buttonOrLink}</div>`;
-  }
-
-  #createButtonOrLink(action: CheckResult) {
-    if (!action || !action?.actionButtonText) {
-      return null;
-    }
-
-    if (action.actionUrl) {
-      return html`<a href=${action.actionUrl} target="_blank" class="x-button-tertiary">${action.actionButtonText}</a>`;
-    }
-
-    if (action.actionName) {
-      return html`<button @click=${() => this.#handleAction(action.actionName!)} class="x-button-secondary">${action.actionButtonText}</button>`;
-    }
-
-    return null;
-  }
-
   async #handleAction(actionName: string) {
     if (this.#assistantContext) {
       await this.#assistantContext.runAction(actionName);
 
-      if(this.#notificationContext){
+      if (this.#notificationContext) {
         this.#notificationContext.peek("positive", {
           data: {
             headline: "Success",
-            message: "Action completed"
-          }
+            message: "Action completed",
+          },
         });
       }
     }
   }
 
-  //x-text-gradient-light
-  // style="background: ${templatesColour} uui-text
-
   render() {
     return html`
       <div>
-        <div class="secondary-container ">
-          <div class="heading">
-            <!-- <h3 class="">Templates</h3> -->
-            <h2 class="x-text-gradient-light uui-font">Templates Assistant</h2>
-            <uui-icon name="icon-wand"></uui-icon>
-          </div>
-          <div class="content">${this.#renderSmartActions()}</div>
-        </div>
+        <xpedite-assistant .checks=${this._checks} @runAction=${(e: CustomEvent) => this.#handleAction(e.detail)}></xpedite-assistant>
         ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()}
       </div>
     `;

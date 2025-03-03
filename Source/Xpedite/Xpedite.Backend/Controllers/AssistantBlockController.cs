@@ -22,34 +22,31 @@ namespace Xpedite.Backend.Controllers
     [Authorize(Policy = AuthorizationPolicies.BackOfficeAccess)]
     [JsonOptionsName(Constants.JsonOptionsNames.BackOffice)]
     [Route("api/v{version:apiVersion}/xpedite")]
-    public class AssistantController(XpediteSettings settings,
+    public class AssistantBlockController(XpediteSettings settings,
         IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
-        BlueprintAssistant blueprintAssistant,
-        TemplateDocumentationAssistant templateDocumentationAssistant) : ManagementApiControllerBase
+        BlockDocumentationAssistant blockDocumentationAssistant) : ManagementApiControllerBase
     {
         private readonly XpediteSettings _settings = settings;
         private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
-        private readonly BlueprintAssistant _blueprintAssistant = blueprintAssistant;
-        private readonly TemplateDocumentationAssistant _templateDocumentationAssistant = templateDocumentationAssistant;
+        private readonly BlockDocumentationAssistant _blockDocumentationAssistant = blockDocumentationAssistant;
 
-        private List<IAssistantCheck<CheckInput>> Checks => [ _blueprintAssistant, _templateDocumentationAssistant];
-        private List<IAssistantAction<ActionInput>> Actions => [_blueprintAssistant, _templateDocumentationAssistant];
+        private List<IAssistantCheck<CheckInput>> Checks => [_blockDocumentationAssistant];
+        private List<IAssistantAction<ActionInput>> Actions => [_blockDocumentationAssistant];
 
-        [HttpPost("assistant-template-checks")]
+        [HttpPost("assistant-block-checks")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(List<CheckResult>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CheckResult>>> TemplateChecks([FromBody] CheckInput input)
         {
-            var documentTypeId = input.DocumentTypeId;
             List<CheckResult> checks = await GetChecks(input);
 
             return Ok(checks);
         }
 
-        [HttpPost("assistant-template-action")]
+        [HttpPost("assistant-block-action")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(typeof(List<CheckResult>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CheckResult>>> TemplateAction([FromBody] ActionInputModel input)
+        public async Task<ActionResult<List<CheckResult>>> TemplateAction([FromBody] BlockActionInputModel input)
         {
             var documentTypeId = input.DocumentTypeId;
 
@@ -75,7 +72,7 @@ namespace Xpedite.Backend.Controllers
             return results.Where(r => r != null).Cast<CheckResult>().ToList();
         }
 
-        public class ActionInputModel : ActionInput
+        public class BlockActionInputModel : ActionInput
         {
             public string? ActionName { get; set; }
         }

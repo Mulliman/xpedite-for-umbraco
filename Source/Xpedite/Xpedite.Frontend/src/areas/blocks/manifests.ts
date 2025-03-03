@@ -26,5 +26,11 @@ export const blocksContextManifests : Array<ManifestGlobalContext> = [
         alias: 'xpedite.blocks.context',
         name: 'xpedite blocks context',
         js: () => import('./context.blocks.ts')
+    },
+    {
+        type: 'globalContext',
+        alias: 'xpedite.blocksAssistant.context',
+        name: 'xpedite blocks assistant context',
+        js: () => import('./context.blocksAssistant.ts')
     }
 ]

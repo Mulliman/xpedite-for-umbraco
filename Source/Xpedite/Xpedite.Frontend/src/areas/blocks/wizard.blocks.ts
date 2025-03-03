@@ -5,15 +5,23 @@ import { css, html, LitElement } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 
+import "../../elements/assistant";
 import "../../elements/field-picker";
 
-import { GenerateBlockApiModel } from "../../api";
+import { CheckResult, GenerateBlockApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpediteBlocksContext, { BLOCKS_CONTEXT_TOKEN } from "./context.blocks";
+import XpediteBlocksAssistantContext, { BLOCKS_ASSISTANT_CONTEXT_TOKEN } from "./context.blocksAssistant";
+import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
 
 @customElement("xpedite-blocks-wizard")
 export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
   #context?: XpediteBlocksContext;
+  #assistantContext?: XpediteBlocksAssistantContext;
+  #notificationContext?: typeof UMB_NOTIFICATION_CONTEXT.TYPE;
+
+  @state()
+  _checks: Array<CheckResult> | undefined;
 
   @state()
   _chosenContentType: string | undefined;
@@ -41,6 +49,22 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     this.consumeContext(BLOCKS_CONTEXT_TOKEN, (context) => {
       this.#context = context;
     });
+
+    this.consumeContext(BLOCKS_ASSISTANT_CONTEXT_TOKEN, (context) => {
+      this.#assistantContext = context;
+
+      this.observe(this.#assistantContext?.checks, (x) => {
+        this._checks = x;
+      });
+    });
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.consumeContext(UMB_NOTIFICATION_CONTEXT, (instance) => {
+      this.#notificationContext = instance;
+    });
   }
 
   #createApiModel() {
@@ -59,15 +83,24 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     return data;
   }
 
+  #resetState() {
+    this._chosenContentType = undefined;
+    this._selectedFields = [];
+    this.#context?.clearApiModel();
+    this.#assistantContext?.clearApiModel();
+  }
+
   #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
     const selectedType = event.target.selection[0];
 
     if (selectedType) {
       this._chosenContentType = selectedType;
+
+      if (this.#assistantContext) {
+        this.#assistantContext.updateApiModel({ documentTypeId: selectedType });
+      }
     } else {
-      this._chosenContentType = undefined;
-      this._selectedFields = [];
-      this.#context?.clearApiModel();
+      this.#resetState();
     }
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
@@ -190,9 +223,29 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     `;
   }
 
+  async #handleAction(actionName: string) {
+    if (this.#assistantContext) {
+      await this.#assistantContext.runAction(actionName);
+
+      if (this.#notificationContext) {
+        this.#notificationContext.peek("positive", {
+          data: {
+            headline: "Success",
+            message: "Action completed",
+          },
+        });
+      }
+    }
+  }
+
   render() {
     return html`
       <div>
+        <xpedite-assistant
+          title="Blocks Assistant"
+          .checks=${this._checks}
+          @runAction=${(e: CustomEvent) => this.#handleAction(e.detail)}
+        ></xpedite-assistant>
         ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()} ${this.#renderChooseSettingsDocumentTypeStep()}
         ${this.#renderChooseSettingsStep()} ${this.#renderOptionsStep()}
       </div>

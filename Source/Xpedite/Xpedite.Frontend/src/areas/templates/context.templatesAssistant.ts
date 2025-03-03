@@ -1,7 +1,5 @@
 import { tryExecuteAndNotify } from "@umbraco-cms/backoffice/resources";
 import { CheckInput, PostApiV1XpediteAssistantTemplateActionData, PostApiV1XpediteAssistantTemplateChecksData, V1Service } from "../../api";
-import CodeGeneratorContext from "../../contexts/CodeGeneratorContext";
-import { UmbDataSourceResponse } from "@umbraco-cms/backoffice/repository";
 import { UmbContextToken } from "@umbraco-cms/backoffice/context-api";
 import { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 import AssistantContext from "../../contexts/AssistantContext";

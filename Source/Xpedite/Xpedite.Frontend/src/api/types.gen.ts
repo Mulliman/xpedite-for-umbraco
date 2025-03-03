@@ -5,6 +5,11 @@ export type ActionInputModel = {
     actionName?: string | null;
 };
 
+export type BlockActionInputModel = {
+    documentTypeId: string;
+    actionName?: string | null;
+};
+
 export type CheckInput = {
     documentTypeId: string;
 };
@@ -75,6 +80,18 @@ export type NotificationHeaderModel = {
 };
 
 export type PostApiV1XpediteAddEnvFileResponse = string;
+
+export type PostApiV1XpediteAssistantBlockActionData = {
+    requestBody?: BlockActionInputModel;
+};
+
+export type PostApiV1XpediteAssistantBlockActionResponse = Array<(CheckResult)>;
+
+export type PostApiV1XpediteAssistantBlockChecksData = {
+    requestBody?: CheckInput;
+};
+
+export type PostApiV1XpediteAssistantBlockChecksResponse = Array<(CheckResult)>;
 
 export type PostApiV1XpediteAssistantTemplateActionData = {
     requestBody?: ActionInputModel;

@@ -18,7 +18,7 @@ namespace Xpedite.Backend.Assistant.Documentation
 
         public abstract string SubFolder { get; }
         
-        public async Task RunAction(TAction input, Guid userKey)
+        public virtual async Task RunAction(TAction input, Guid userKey)
         {
             var contentType = await ContentTypeService.GetAsync(input.DocumentTypeId)
                 ?? throw new ArgumentException($"Content type {input.DocumentTypeId} does not exist");
@@ -30,26 +30,18 @@ namespace Xpedite.Backend.Assistant.Documentation
 
             foreach (var root in roots)
             {
-                var parent = FindDocumentationParentForPageType(SubFolder, documentationPageType, contentType, root);
+                var parent = FindDocumentationParent(SubFolder, documentationPageType, contentType, root);
 
-                if(parent == null)
+                if (parent == null)
                 {
                     continue;
                 }
 
-                var model = new ContentCreateModel
-                {
-                    ContentTypeKey = input.DocumentTypeId,
-                    InvariantName = $"{contentType.Name}",
-                    ParentKey = parent.Key,
-                    Key = Guid.NewGuid()
-                };
-
-                await ContentEditingService.CreateAsync(model, userKey);
-            } 
+                await CreatePage(userKey, contentType, documentationPageType, parent);
+            }
         }
 
-        public async Task<CheckResult?> RunCheck(TCheck input)
+        public virtual async Task<CheckResult?> RunCheck(TCheck input)
         {
             var documentTypeId = input.DocumentTypeId;
 
@@ -65,7 +57,7 @@ namespace Xpedite.Backend.Assistant.Documentation
 
             foreach (var root in roots)
             {
-                var foundPage = FindDocumentationPageForPageType(SubFolder, documentationPageType, contentType, root);
+                var foundPage = FindDocumentationPage(SubFolder, documentationPageType, contentType, root);
 
                 if (foundPage != null)
                 {
@@ -88,9 +80,24 @@ namespace Xpedite.Backend.Assistant.Documentation
             };
         }
 
-        private IContent? FindDocumentationPageForPageType(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
+        protected abstract IContent? FindDocumentationPage(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root);
+
+        protected virtual async Task CreatePage(Guid userKey, IContentType contentType, IContentType documentationPageType, IContent parent)
         {
-            var subfolderPage = FindDocumentationParentForPageType(subfolder, documentationPageType, contentType, root);
+            var model = new ContentCreateModel
+            {
+                ContentTypeKey = contentType.IsElement ? documentationPageType.Key : contentType.Key,
+                InvariantName = $"{contentType.Name}",
+                ParentKey = parent.Key,
+                Key = Guid.NewGuid()
+            };
+
+            await ContentEditingService.CreateAsync(model, userKey);
+        }
+
+        protected IContent? FindDocumentationPageForPageType(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
+        {
+            var subfolderPage = FindDocumentationParent(subfolder, documentationPageType, contentType, root);
 
             if (subfolderPage == null)
             {
@@ -102,7 +109,21 @@ namespace Xpedite.Backend.Assistant.Documentation
             return docPage;
         }
 
-        private IContent? FindDocumentationParentForPageType(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
+        protected IContent? FindDocumentationPageForPageName(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
+        {
+            var subfolderPage = FindDocumentationParent(subfolder, documentationPageType, contentType, root);
+
+            if (subfolderPage == null || contentType.Name == null)
+            {
+                return null;
+            }
+
+            var docPage = GetChildByName(subfolderPage, contentType.Name);
+
+            return docPage;
+        }
+
+        protected IContent? FindDocumentationParent(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
         {
             var docsRootPage = GetChildByDocType(root, documentationPageType.Id);
 
@@ -114,13 +135,13 @@ namespace Xpedite.Backend.Assistant.Documentation
             return GetChildByName(docsRootPage, subfolder);
         }
 
-        private IContent? GetChildByDocType(IContent parent, int docTypeId)
+        protected IContent? GetChildByDocType(IContent parent, int docTypeId)
         {
             var children = ContentService.GetPagedChildren(parent.Id, 0, 100, out _);
             return children.FirstOrDefault(r => r.ContentTypeId == docTypeId);
         }
 
-        private IContent? GetChildByName(IContent parent, string childName)
+        protected IContent? GetChildByName(IContent parent, string childName)
         {
             var children = ContentService.GetPagedChildren(parent.Id, 0, 100, out _);
             return children.FirstOrDefault(child => childName.Equals(child?.Name, StringComparison.OrdinalIgnoreCase));

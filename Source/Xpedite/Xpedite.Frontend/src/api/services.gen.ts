@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { PostApiV1XpediteAddEnvFileResponse, PostApiV1XpediteAssistantTemplateActionData, PostApiV1XpediteAssistantTemplateActionResponse, PostApiV1XpediteAssistantTemplateChecksData, PostApiV1XpediteAssistantTemplateChecksResponse, PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
+import type { PostApiV1XpediteAddEnvFileResponse, PostApiV1XpediteAssistantBlockActionData, PostApiV1XpediteAssistantBlockActionResponse, PostApiV1XpediteAssistantBlockChecksData, PostApiV1XpediteAssistantBlockChecksResponse, PostApiV1XpediteAssistantTemplateActionData, PostApiV1XpediteAssistantTemplateActionResponse, PostApiV1XpediteAssistantTemplateChecksData, PostApiV1XpediteAssistantTemplateChecksResponse, PostApiV1XpediteGenerateBlockData, PostApiV1XpediteGenerateBlockResponse, PostApiV1XpediteGeneratePartialData, PostApiV1XpediteGeneratePartialResponse, PostApiV1XpediteGenerateTemplateData, PostApiV1XpediteGenerateTemplateResponse, GetApiV1XpediteGetConfigResponse, PostApiV1XpediteSaveBlockData, PostApiV1XpediteSaveBlockResponse, PostApiV1XpediteSavePartialData, PostApiV1XpediteSavePartialResponse, PostApiV1XpediteSaveTemplateData, PostApiV1XpediteSaveTemplateResponse } from './types.gen';
 
 export class V1Service {
     /**
@@ -27,6 +27,44 @@ export class V1Service {
      * @returns unknown OK
      * @throws ApiError
      */
+    public static postApiV1XpediteAssistantBlockAction(data: PostApiV1XpediteAssistantBlockActionData = {}): CancelablePromise<PostApiV1XpediteAssistantBlockActionResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xpedite/assistant-block-action',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: 'The resource is protected and requires an authentication token',
+                403: 'The authenticated user do not have access to this resource'
+            }
+        });
+    }
+    
+    /**
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown OK
+     * @throws ApiError
+     */
+    public static postApiV1XpediteAssistantBlockChecks(data: PostApiV1XpediteAssistantBlockChecksData = {}): CancelablePromise<PostApiV1XpediteAssistantBlockChecksResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/xpedite/assistant-block-checks',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                401: 'The resource is protected and requires an authentication token',
+                403: 'The authenticated user do not have access to this resource'
+            }
+        });
+    }
+    
+    /**
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown OK
+     * @throws ApiError
+     */
     public static postApiV1XpediteAssistantTemplateAction(data: PostApiV1XpediteAssistantTemplateActionData = {}): CancelablePromise<PostApiV1XpediteAssistantTemplateActionResponse> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -34,7 +72,8 @@ export class V1Service {
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
-                401: 'The resource is protected and requires an authentication token'
+                401: 'The resource is protected and requires an authentication token',
+                403: 'The authenticated user do not have access to this resource'
             }
         });
     }
@@ -52,7 +91,8 @@ export class V1Service {
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {
-                401: 'The resource is protected and requires an authentication token'
+                401: 'The resource is protected and requires an authentication token',
+                403: 'The authenticated user do not have access to this resource'
             }
         });
     }

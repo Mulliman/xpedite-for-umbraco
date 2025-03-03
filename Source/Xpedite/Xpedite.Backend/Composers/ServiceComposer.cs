@@ -1,8 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using System.Configuration;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Notifications;
-using Umbraco.Cms.Core.Services;
 using Xpedite.Backend.Assistant.Blueprints;
 using Xpedite.Backend.Assistant.Documentation;
 using Xpedite.Backend.Codebase;
@@ -26,6 +24,7 @@ public class ServiceComposer : IComposer
         // Assistant
         builder.Services.AddScoped<BlueprintAssistant>();
         builder.Services.AddScoped<TemplateDocumentationAssistant>();
+        builder.Services.AddScoped<BlockDocumentationAssistant>();
 
         builder.Services.Configure<Xpedite>(builder.Config.GetSection("Xpedite"));
 
