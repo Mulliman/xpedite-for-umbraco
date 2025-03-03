@@ -39,6 +39,12 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     });
   }
 
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    
+    this.#context?.clearApiModel();
+  }
+
   #createApiModel() {
     if (!this._chosenContentType || !this._selectedFields?.length) {
       return;

@@ -54,6 +54,13 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     });
   }
 
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    
+    this.#context?.clearApiModel();
+    this.#assistantContext?.clearApiModel();
+  }
+
   #createApiModel() {
     if (!this._chosenContentType || !this._selectedFields?.length) {
       return;
@@ -146,7 +153,7 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
   render() {
     return html`
       <div>
-        <xpedite-assistant .checks=${this._checks} @runAction=${(e: CustomEvent) => this.#handleAction(e.detail)}></xpedite-assistant>
+        <xpedite-assistant title="Templates Assistant" .checks=${this._checks} @runAction=${(e: CustomEvent) => this.#handleAction(e.detail)}></xpedite-assistant>
         ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()}
       </div>
     `;
