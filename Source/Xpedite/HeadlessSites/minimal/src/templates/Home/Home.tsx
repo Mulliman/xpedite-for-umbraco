@@ -1,17 +1,22 @@
-import { TypedUmbracoNode } from "@/umbraco/types";
+import { Block, TypedUmbracoNode } from "@/umbraco/types";
+import PageHeading from "@/partials/PageHeading";
 
 import "./Home.css";
+import PageBlocks from "@/partials/PageBlocks";
 
 export type HomeProps = {
-  pageTitle?: any;
-};
+  pageBlockList?: any,
+  pageTitle?: any,
+}
 
 export default function Home(currentPage: TypedUmbracoNode<HomeProps>) {
-  const { pageTitle } = currentPage?.properties;
+  const { pageTitle, pageBlockList } = currentPage?.properties;
 
   return (
     <div className="template-home">
-      <h1>{pageTitle}</h1>
+      <PageHeading pageTitle={pageTitle} />
+
+      <PageBlocks pageBlockList={pageBlockList}></PageBlocks>
     </div>
   );
 }

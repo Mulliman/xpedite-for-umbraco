@@ -17,7 +17,7 @@ export default function RichTextBlock({ content, settings }: RichTextBlockProps)
     <div className="block-rich-text-block">
       <div className="block-rich-text-block-name">Block: RichTextBlock</div>
 
-      <div className="" dangerouslySetInnerHTML={{ __html: richText?.markup || "" }}></div>
+      <div className="richText" dangerouslySetInnerHTML={{ __html: richText?.markup || "" }}></div>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { Block, TypedUmbracoNode } from "@/umbraco/types";
-import { BlockRenderer } from "@/blocks/BlockRenderer";
 import PageHeading from "@/partials/PageHeading";
 
 import "./Page.css";
+import PageBlocks from "@/partials/PageBlocks";
 
 export type PageProps = {
   pageBlockList?: any;
@@ -18,16 +18,7 @@ export default function Page(currentPage: TypedUmbracoNode<PageProps>) {
 
       <PageHeading pageTitle={pageTitle} />
 
-      {pageBlockList && (
-        <section className="">
-          {pageBlockList.items.map((contentRow: Block<any, any>) => (
-            <div key={contentRow?.content?.id} className="">
-              <BlockRenderer {...contentRow} />
-            </div>
-          ))}
-        </section>
-      )}
-      
+      <PageBlocks pageBlockList={pageBlockList}></PageBlocks>
     </div>
   );
 }
