@@ -9,5 +9,5 @@ export default function UmbracoImages(props: UmbracoImagesProps) {
 
   const { umbracoImages, ...htmlAttributes } = props;
 
-  return umbracoImages.filter(p => !!p).map(p => <SingleUmbracoImage key={p.url} {...htmlAttributes} umbracoImage={p} />)
+  return umbracoImages.filter(p => !!p).map(p => <SingleUmbracoImage {...htmlAttributes} umbracoImage={p} />)
 }

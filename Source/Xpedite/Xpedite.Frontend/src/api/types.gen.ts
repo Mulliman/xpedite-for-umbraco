@@ -85,6 +85,8 @@ export type NotificationHeaderModel = {
     type: EventMessageTypeModel;
 };
 
+export type PostApiV1XpediteAddBaseFilesResponse = string;
+
 export type PostApiV1XpediteAddEnvFileResponse = string;
 
 export type PostApiV1XpediteAssistantBlockActionData = {

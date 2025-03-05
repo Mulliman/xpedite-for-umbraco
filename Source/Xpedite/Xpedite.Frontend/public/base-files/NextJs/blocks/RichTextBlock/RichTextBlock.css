@@ -1,0 +1,13 @@
+.block-rich-text-block {
+    border: 2px solid #92C98C;
+}
+
+.block-rich-text-block-name {
+    background: #92C98C;
+    color: black;
+}
+
+.richText{
+    max-width: 1200px;
+    margin: 1rem auto;
+}

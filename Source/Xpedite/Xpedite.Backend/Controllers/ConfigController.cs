@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,16 +25,17 @@ namespace Xpedite.Backend.Controllers
     [JsonOptionsName(Constants.JsonOptionsNames.BackOffice)]
     [Route("api/v{version:apiVersion}/xpedite")]
     public class ConfigController(XpediteSettings settings,
-        IOptions<DeliveryApiSettings> deliveryApiSettings,
-        IOptions<SwaggerGenOptions> swaggerOptions,
-        IPublishedContentQuery publishedContentQuery,
-        IServiceProvider serviceProvider) : Controller
+                IOptions<DeliveryApiSettings> deliveryApiSettings,
+                IOptions<SwaggerGenOptions> swaggerOptions,
+                IPublishedContentQuery publishedContentQuery,
+                IServiceProvider serviceProvider,
+                IWebHostEnvironment hostingEnvironment) : Controller
     {
         private readonly XpediteSettings _settings = settings;
         private readonly IOptions<DeliveryApiSettings> _deliveryApiSettings = deliveryApiSettings;
         private readonly IOptions<SwaggerGenOptions> _swaggerOptions = swaggerOptions;
         private readonly IPublishedContentQuery _publishedContentQuery = publishedContentQuery;
-        //private readonly IServiceProvider _serviceProvider = serviceProvider;
+        private readonly IWebHostEnvironment _hostingEnvironment = hostingEnvironment;
 
         private const string DeliveryApiName = "delivery";
 
@@ -91,6 +93,47 @@ namespace Xpedite.Backend.Controllers
             return Ok();
         }
 
+        [HttpPost("add-base-files")]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> AddBaseFiles()
+        {
+            var webRootPath = _hostingEnvironment.WebRootPath;
+            var sourceFolder = Path.Combine(webRootPath, "app_plugins", "Xpedite.Frontend", "base-files", "NextJs");
+            var destinationFolder = _settings.CodebaseSrcPath;
+
+            if (string.IsNullOrWhiteSpace(destinationFolder))
+            {
+                return BadRequest("CodebaseSrcPath is not set.");
+            }
+
+            if (!Directory.Exists(sourceFolder))
+            {
+                return NotFound("Source folder does not exist.");
+            }
+
+            if (!Directory.Exists(destinationFolder))
+            {
+                Directory.CreateDirectory(destinationFolder);
+            }
+
+            foreach (var file in Directory.GetFiles(sourceFolder, "*.*", SearchOption.AllDirectories))
+            {
+                var relativePath = Path.GetRelativePath(sourceFolder, file);
+                var destFile = Path.Combine(destinationFolder, relativePath);
+                var destDir = Path.GetDirectoryName(destFile);
+
+                if (!Directory.Exists(destDir))
+                {
+                    Directory.CreateDirectory(destDir);
+                }
+
+                System.IO.File.Copy(file, destFile, true);
+            }
+
+            return Ok();
+        }
+
         private bool IsDeliveryApiInstalled()
         {
             return _swaggerOptions.Value?.SwaggerGeneratorOptions.SwaggerDocs.Keys.Any(k => k == DeliveryApiName) ?? false;
@@ -105,7 +148,7 @@ namespace Xpedite.Backend.Controllers
 
         private bool? DoesFileExistInSrcFolder(string partialPath)
         {
-            if(string.IsNullOrWhiteSpace(partialPath)) return null;
+            if (string.IsNullOrWhiteSpace(partialPath)) return null;
             if (string.IsNullOrWhiteSpace(_settings.CodebaseSrcPath)) return null;
 
             var filePath = GetFullSrcPath(partialPath);

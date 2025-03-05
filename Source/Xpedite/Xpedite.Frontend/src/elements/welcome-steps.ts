@@ -264,11 +264,26 @@ UMBRACO_HOME_ITEM={Your home page}</pre
       <li class=${className}>
         <h3>Install XPEDITE types and example components to your codebase</h3>
         <div class="help">
-          <button class="x-button">Automatically copy files to codebase</button> or copy the files you want manually from the app_plugins folder of this Umbraco
+          <button class="x-button" @click=${() => this.#addBaseCode()}>Automatically copy files to codebase</button> or copy the files you want manually from the app_plugins folder of this Umbraco
           instance.
         </div>
       </li>
     `;
+  }
+
+  async #addBaseCode() {
+    await tryExecuteAndNotify(this, V1Service.postApiV1XpediteAddBaseFiles());
+
+    if(this.#notificationContext){
+      this.#notificationContext.peek("positive", {
+        data: {
+          headline: "Success",
+          message: "Base files added to Src folder"
+        }
+      });
+    }
+
+    this.dispatchEvent(new CustomEvent("stepCompleted", { detail: { step: "baseCode" } }));
   }
 
   // #endregion
