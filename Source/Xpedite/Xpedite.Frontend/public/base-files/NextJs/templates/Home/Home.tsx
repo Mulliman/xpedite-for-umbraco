@@ -14,6 +14,7 @@ export default function Home(currentPage: TypedUmbracoNode<HomeProps>) {
 
   return (
     <div className="template-home">
+      <div className="template-home-name">Template: Home</div>
       <PageHeading pageTitle={pageTitle} />
 
       <PageBlocks pageBlockList={pageBlockList}></PageBlocks>

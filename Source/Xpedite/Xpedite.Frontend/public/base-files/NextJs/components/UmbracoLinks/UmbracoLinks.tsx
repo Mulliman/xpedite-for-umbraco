@@ -9,5 +9,5 @@ export default function UmbracoLinks(props: UmbracoLinksProps) {
 
   const { umbracoLinks, ...htmlAttributes } = props;
 
-  return umbracoLinks.filter(p => !!p).map(p => <SingleUmbracoLink {...htmlAttributes} umbracoLink={p} />)
+  return umbracoLinks.filter(p => !!p).map(p => <SingleUmbracoLink key={p.url} {...htmlAttributes} umbracoLink={p} />)
 }
