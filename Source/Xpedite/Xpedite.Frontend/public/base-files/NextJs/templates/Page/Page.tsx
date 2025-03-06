@@ -1,8 +1,9 @@
 import { Block, TypedUmbracoNode } from "@/umbraco/types";
 import PageHeading from "@/partials/PageHeading";
+import { UmbracoPropertiesJson } from "@/components/UmbracoPropertiesJson";
+import PageBlocks from "@/partials/PageBlocks";
 
 import "./Page.css";
-import PageBlocks from "@/partials/PageBlocks";
 
 export type PageProps = {
   pageBlockList?: any;
@@ -19,6 +20,8 @@ export default function Page(currentPage: TypedUmbracoNode<PageProps>) {
       <PageHeading pageTitle={pageTitle} />
 
       <PageBlocks pageBlockList={pageBlockList}></PageBlocks>
+
+      <UmbracoPropertiesJson data={currentPage}></UmbracoPropertiesJson>
     </div>
   );
 }

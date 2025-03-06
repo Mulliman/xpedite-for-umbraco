@@ -3,6 +3,7 @@ import PageHeading from "@/partials/PageHeading";
 
 import "./Home.css";
 import PageBlocks from "@/partials/PageBlocks";
+import { UmbracoPropertiesJson } from "@/components/UmbracoPropertiesJson";
 
 export type HomeProps = {
   pageBlockList?: any,
@@ -18,6 +19,8 @@ export default function Home(currentPage: TypedUmbracoNode<HomeProps>) {
       <PageHeading pageTitle={pageTitle} />
 
       <PageBlocks pageBlockList={pageBlockList}></PageBlocks>
+
+      <UmbracoPropertiesJson data={currentPage}></UmbracoPropertiesJson>
     </div>
   );
 }

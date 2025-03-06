@@ -1,0 +1,9 @@
+.page-json {
+    margin-top: 1rem;
+    border: 2px solid #032523;
+}
+
+.page-json-name {
+    background: #032523;
+    color: white;
+}
