@@ -1,4 +1,4 @@
-import { css, unsafeCSS } from "lit";
+import { css } from "lit";
 import { buttonGradient } from "./colours";
 
 // export const mainGreen = "#2B9088";

@@ -1,10 +1,8 @@
 import { UmbControllerBase } from "@umbraco-cms/backoffice/class-api";
-import { CheckResult, GeneratedFiles } from "../api";
+import { CheckResult } from "../api";
 import { UmbControllerHost } from "@umbraco-cms/backoffice/controller-api";
 import { UmbDataSourceResponse } from "@umbraco-cms/backoffice/repository";
 import { Observable, UmbObjectState } from "@umbraco-cms/backoffice/observable-api";
-import { umbConfirmModal } from "@umbraco-cms/backoffice/modal";
-import { debounce } from "@umbraco-cms/backoffice/utils";
 
 export default abstract class AssistantContext<T> extends UmbControllerBase {
   #apiModel?: T;

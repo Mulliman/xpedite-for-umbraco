@@ -1,4 +1,4 @@
-import { css, unsafeCSS } from "lit";
+import { css } from "lit";
 
 // export const mainGreen = "#2B9088";
 // export const mainGreenCss = unsafeCSS(mainGreen);

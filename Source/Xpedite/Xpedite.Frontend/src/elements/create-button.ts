@@ -19,8 +19,6 @@ export class XpediteCreateButton extends UmbLitElement {
     this.value = value;
   }
 
-  async #onClick() {}
-
   override render() {
     if (!this.value) return null;
 
