@@ -1,28 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<!-- Product Info -->
+		<Product>XPEDITE</Product>
+		<PackageId>XPEDITE.StarterKit</PackageId>
+		<Title>XPEDITE Headless Starter Kit</Title>
+		<Description>Barebones starter kit designed to get you started with XPEDITE's NextJs code generation for creating headless sites based on Umbraco content.</Description>
+		<PackageTags>umbraco umbraco15 xpedite headless starter starterkit nextjs code-generation assistant umbraco-marketplace</PackageTags>
+
+		<!-- Versions -->
 		<TargetFramework>net9.0</TargetFramework>
+		<Version>0.0.4-alpha</Version>
+		<PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+
+		<!-- Me -->
+		<Authors>Sam Mullins</Authors>
+		<Copyright>Sam Mullins</Copyright>
+		<Authors>Sam Mullins</Authors>
+		<Company>Sam Mullins</Company>
+
+		<!-- Docs and Logos -->
+		<PackageProjectUrl>https://github.com/Mulliman/xpedite-for-umbraco</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Mulliman/xpedite-for-umbraco</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<PackageIcon>Logo.png</PackageIcon>
+		<PackageIconUrl>https://github.com/Mulliman/xpedite-for-umbraco/blob/master/Brand/Logo.png?raw=true</PackageIconUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<!-- Settings -->
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageId>XPEDITE.StarterKit</PackageId>
-		<Title>XPEDITE.StarterKit</Title>
-		<Authors>Sam Mullins</Authors>
-		<Product>XPEDITE</Product>
-		<PackageIcon>Logo.png</PackageIcon>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<IncludeSymbols>False</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<PackageOutputPath>$(OutputPath)</PackageOutputPath>
-		<Version>15.0.0</Version>
+		<ContentTargetFolders>.</ContentTargetFolders>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Migrations\package.zip" />
-		<EmbeddedResource Include="Migrations\package.zip" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Umbraco.Cms.Web.Website" Version="[15.2.0,)" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Xpedite.Backend\Xpedite.Backend.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -37,4 +52,9 @@
 			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Migrations\package.zip" />
+		<EmbeddedResource Include="Migrations\package.zip" />
+	</ItemGroup>
+	
 </Project>

@@ -1,28 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+		<!-- Product Info -->
+		<Product>XPEDITE</Product>
 		<PackageId>XPEDITE</PackageId>
 		<Title>XPEDITE</Title>
+		<Description>Automatic NextJs code generation for creating headless sites based on Umbraco content.</Description>
+		<PackageTags>umbraco umbraco15 xpedite headless starter starterkit nextjs code-generation assistant umbraco-marketplace</PackageTags>
+		<PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+		
+		<!-- Versions -->
+		<TargetFramework>net9.0</TargetFramework>
+		<Version>0.0.4-alpha</Version>
+
+		<!-- Me -->
 		<Authors>Sam Mullins</Authors>
-		<Product>XPEDITE</Product>
+		<Copyright>Sam Mullins</Copyright>
+		<Authors>Sam Mullins</Authors>
+		<Company>Sam Mullins</Company>
+
+		<!-- Docs and Logos -->
+		<PackageProjectUrl>https://github.com/Mulliman/xpedite-for-umbraco</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Mulliman/xpedite-for-umbraco</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
 		<PackageIcon>Logo.png</PackageIcon>
+		<PackageIconUrl>https://github.com/Mulliman/xpedite-for-umbraco/blob/master/Brand/Logo.png?raw=true</PackageIconUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<IncludeSymbols>true</IncludeSymbols>
-		<IncludeSource>true</IncludeSource>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<PackageOutputPath>$(OutputPath)</PackageOutputPath>
-		<Version>15.0.1</Version>
+
+		<!-- Settings -->
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 		<ContentTargetFolders>.</ContentTargetFolders>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Umbraco.Cms" Version="[15.2.0,)" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Xpedite.Generator\Xpedite.Generator.csproj">
+			<IncludeAssets>all</IncludeAssets>
+			<Private>True</Private>
+		</ProjectReference>
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <Optimize>False</Optimize>
+		<Optimize>False</Optimize>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <Optimize>False</Optimize>
+		<Optimize>False</Optimize>
 		<DebugType>full</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
@@ -42,9 +68,7 @@
 			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Umbraco.Cms" Version="[15.2.0,)" />
-	</ItemGroup>
+	
 	<ItemGroup>
 		<Content Include="ui\**" Pack="true" PackagePath="content\ui">
 			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
@@ -52,12 +76,9 @@
 		<None Include="buildTransitive\**\*.*" Pack="true" PackagePath="buildTransitive" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Content Include="Views\xpedite.cshtml">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\XPedite.Generator\Xpedite.Generator.csproj" />
+		<Content Include="Views\xpedite.cshtml">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 	</ItemGroup>
 </Project>
