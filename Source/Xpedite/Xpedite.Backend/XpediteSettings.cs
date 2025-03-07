@@ -8,7 +8,8 @@ public class XpediteSettings(IWebHostEnvironment hostingEnvironment, IOptions<Xp
     private readonly IWebHostEnvironment _hostingEnvironment = hostingEnvironment;
     private readonly IOptions<Xpedite> _xpediteSettings = xpediteSettings;
 
-    public string? CodebaseSrcPath => _xpediteSettings?.Value?.CodebaseSrcPath;
+    public string? CodebaseSrcPath => _xpediteSettings?.Value?.CodebaseSrcPath
+        ?? (_xpediteSettings?.Value?.FrontendCodebaseRootPath != null ?  Path.Combine(_xpediteSettings.Value.FrontendCodebaseRootPath, "src") : null);
 
     public string TemplatesRootFolderPath => !string.IsNullOrWhiteSpace(_xpediteSettings?.Value?.TemplatesRootFolderPath)
         ? _xpediteSettings.Value.TemplatesRootFolderPath
@@ -25,6 +26,8 @@ public class XpediteSettings(IWebHostEnvironment hostingEnvironment, IOptions<Xp
 
 public class Xpedite
 {
+    public string? FrontendCodebaseRootPath { get; set; }
+
     public string? CodebaseSrcPath { get; set; }
 
     public string? TemplatesRootFolderPath { get; set; }

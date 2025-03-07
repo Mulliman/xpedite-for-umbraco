@@ -147,12 +147,12 @@ builder.CreateUmbracoBuilder()
     return html`
       <li class=${className}>
         <h3>
-          Configure your codebase Src directory in <code>appsettings.Development.json</code> and ensure that this website has access to the folder.
+          Configure your frontend codebase directory (the folder created by create-next-app) in <code>appsettings.Development.json</code> and ensure that this website has access to the folder.
         </h3>
         <div class="help">
           <pre>
 "Xpedite": {
-  "CodebaseSrcPath": "c://path/to/your/codebase/src",
+  "FrontendCodebaseRootPath": "c://path/to/your/codebase",
 }</pre
           >
         </div>
@@ -168,9 +168,8 @@ builder.CreateUmbracoBuilder()
         <h3>Install the testing dependencies Jest and React Testing Library</h3>
         <div class="help">
           <pre>npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node</pre>
+          <p>Then run <code>npm init jest@latest</code>. You can use the settings below:</p>
           <pre>
-npm init jest@latest
-
 √ Would you like to use Jest when running "test" script in "package.json"? ... yes
 √ Would you like to use Typescript for the configuration file? ... yes
 √ Choose the test environment that will be used for testing » jsdom (browser-like)
