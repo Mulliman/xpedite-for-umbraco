@@ -292,6 +292,7 @@ UMBRACO_HOME_ITEM={Your home page}</pre
     XpediteStyles,
     css`
       :host {
+        max-width:95%;
       }
 
       .steps {
@@ -300,6 +301,7 @@ UMBRACO_HOME_ITEM={Your home page}</pre
         list-style: none;
         counter-reset: step-counter;
         padding-top: 1rem;
+        padding-left:0;
         max-width:1200px;
 
         li {
@@ -309,6 +311,8 @@ UMBRACO_HOME_ITEM={Your home page}</pre
           counter-increment: step-counter;
 
           h3 {
+            line-height: 2rem;
+
             &::before {
               content: counter(step-counter);
               background: ${mainGreenCss};
@@ -374,6 +378,30 @@ UMBRACO_HOME_ITEM={Your home page}</pre
 
           pre {
             padding: 10px;
+            overflow-x: scroll;
+            overflow-y: auto;
+
+            /* width */
+            &::-webkit-scrollbar {
+              width: 10px;
+              height: 10px;
+            }
+
+            /* Track */
+            &::-webkit-scrollbar-track {
+              background: #333;
+            }
+
+            /* Handle */
+            &::-webkit-scrollbar-thumb {
+              background: #888;
+              border-radius: 5px;
+            }
+
+            /* Handle on hover */
+            &::-webkit-scrollbar-thumb:hover {
+              background: #555;
+            }
           }
         }
       }
