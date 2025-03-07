@@ -1,3 +1,8 @@
+import { Block } from "@/umbraco/types";
+import { BlockRenderer } from "@/blocks/BlockRenderer";
+import UmbracoImages, { UmbracoImageProps } from "@/components/UmbracoImages";
+import UmbracoLinks, { UmbracoLinksProps } from "@/components/UmbracoLinks";
+
 import './{{name.value}}.css'
 
 export type {{name.pascal_case}}Props = { {{ for prop in properties }}

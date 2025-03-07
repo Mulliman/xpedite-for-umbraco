@@ -1,6 +1,7 @@
 import { Block } from "@/umbraco/types";
-import UmbracoImages from "@/components/UmbracoImages";
-import UmbracoLinks from "@/components/UmbracoLinks";
+import { BlockRenderer } from "@/blocks/BlockRenderer";
+import UmbracoImages, { UmbracoImageProps } from "@/components/UmbracoImages";
+import UmbracoLinks, { UmbracoLinksProps } from "@/components/UmbracoLinks";
 
 import './{{name.value}}.css'
 
