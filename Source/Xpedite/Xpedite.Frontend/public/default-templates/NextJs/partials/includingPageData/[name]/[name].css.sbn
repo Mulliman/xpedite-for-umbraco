@@ -1,8 +1,8 @@
 .partial-{{ name.kebab_case }} {
-    border: 2px solid #C66476;
+    border: 2px solid #066784;
 }
 
 .partial-{{ name.kebab_case }}-name {
-    background: #C66476;
+    background: #066784;
     color: white;
 }

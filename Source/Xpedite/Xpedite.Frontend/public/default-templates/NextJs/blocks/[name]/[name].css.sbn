@@ -1,8 +1,8 @@
 .block-{{ name.kebab_case }} {
-    border: 2px solid #FAAB7B;
+    border: 2px solid #92C98C;
 }
 
 .block-{{ name.kebab_case }}-name {
-    background: #FAAB7B;
+    background: #92C98C;
     color: black;
 }
