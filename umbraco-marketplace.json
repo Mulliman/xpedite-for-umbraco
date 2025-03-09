@@ -8,6 +8,7 @@
     ]
   },
   "Category": "Themes & Starter Kits",
+  "AlternateCategory": "Headless",
   "DocumentationUrl": "https://github.com/Mulliman/xpedite-for-umbraco",
   "LicenseTypes": [ "Free" ],
   "IssueTrackerUrl": "https://github.com/Mulliman/xpedite-for-umbraco/issues",
@@ -23,5 +24,13 @@
     "Next.js"
   ],
   "Title": "XPEDITE.StarterKit",
-  "VideoUrl": "https://youtu.be/uSQ823rxnVc"
+  "Description": "Barebones starter kit designed to get you started with XPEDITE's NextJs code generation for creating headless sites based on Umbraco content. This is an early version primarily designed for people to try, experiment, and contribute to; be careful before making this the backbone of a production site.",
+  "VideoUrl": "https://youtu.be/uSQ823rxnVc",
+  "RelatedPackages": [
+        {
+          "GroupTitle": "XPEDITE",
+          "PackageId": "XPEDITE",
+          "Description": "Automatic NextJs code generation for creating headless sites based on Umbraco content. Use this if you already have content, otherwise use XPEDITE.StarterKit."
+        }
+      ]
 }

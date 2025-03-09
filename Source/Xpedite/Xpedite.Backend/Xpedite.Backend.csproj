@@ -5,7 +5,7 @@
 		<PackageId>XPEDITE</PackageId>
 		<Title>XPEDITE</Title>
 		<Description>Automatic NextJs code generation for creating headless sites based on Umbraco content.</Description>
-		<PackageTags>umbraco umbraco15 xpedite headless starter starterkit nextjs code-generation assistant umbraco-marketplace</PackageTags>
+		<PackageTags>umbraco umbraco15 xpedite headless starter starterkit nextjs code-generation assistant</PackageTags>
 		<PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
 		
 		<!-- Versions -->
