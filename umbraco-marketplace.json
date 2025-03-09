@@ -1,0 +1,27 @@
+{
+  "AuthorDetails": {
+    "Name": "Sam Mullins",
+    "Description": "Web developer based in Bournemouth, UK",
+    "Url": "https://www.sammullins.co.uk/",
+    "ImageUrl": "https://www.sammullins.co.uk/media/x4sltjxm/me.png",
+    "Contributors": [
+    ]
+  },
+  "Category": "Themes & Starter Kits",
+  "DocumentationUrl": "https://github.com/Mulliman/xpedite-for-umbraco",
+  "LicenseTypes": [ "Free" ],
+  "IssueTrackerUrl": "https://github.com/Mulliman/xpedite-for-umbraco/issues",
+  "Screenshots": [
+    
+  ],
+  "Tags": [
+    "Code Generation",
+    "Starterkit",
+    "Starter",
+    "Kit",
+    "Headless",
+    "Next.js"
+  ],
+  "Title": "XPEDITE.StarterKit",
+  "VideoUrl": "https://youtu.be/uSQ823rxnVc"
+}
