@@ -1,4 +1,5 @@
-﻿using Umbraco.Cms.Core.Models;
+﻿using Microsoft.Net.Http.Headers;
+using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.ContentEditing;
 using Umbraco.Cms.Core.Services;
 
@@ -7,11 +8,13 @@ namespace Xpedite.Backend.Assistant.Documentation
     public abstract class DocumentationAssistantBase<TCheck, TAction>(IContentService contentService,
         IContentEditingService contentEditingService,
         IContentTypeService contentTypeService,
+        DocumentationPageFinder documentationPageFinder,
         XpediteSettings settings) : IAssistantAction<TAction>, IAssistantCheck<TCheck> where TCheck : CheckInput where TAction : ActionInput
     {
         protected readonly IContentService ContentService = contentService;
         protected readonly IContentEditingService ContentEditingService = contentEditingService;
         protected readonly IContentTypeService ContentTypeService = contentTypeService;
+        protected readonly DocumentationPageFinder DocumentationPageFinder = documentationPageFinder;
         protected readonly XpediteSettings Settings = settings;
         
         public abstract string ActionName { get; }
@@ -30,7 +33,7 @@ namespace Xpedite.Backend.Assistant.Documentation
 
             foreach (var root in roots)
             {
-                var parent = FindDocumentationParent(SubFolder, documentationPageType, contentType, root);
+                var parent = DocumentationPageFinder.FindDocumentationParent(SubFolder, documentationPageType, root);
 
                 if (parent == null)
                 {
@@ -50,7 +53,9 @@ namespace Xpedite.Backend.Assistant.Documentation
             var documentationPageType = ContentTypeService.Get(Settings.DocumentationDocumentTypeAlias);
             var contentType = ContentTypeService.Get(documentTypeId);
 
-            if (documentationPageType == null || contentType == null)
+            var isMissingAllowedChild = documentationPageType?.AllowedContentTypes?.Any(ct => contentType?.Key == ct.Key) == false;
+
+            if (documentationPageType == null || contentType == null || isMissingAllowedChild)
             {
                 return null;
             }
@@ -93,58 +98,6 @@ namespace Xpedite.Backend.Assistant.Documentation
             };
 
             await ContentEditingService.CreateAsync(model, userKey);
-        }
-
-        protected IContent? FindDocumentationPageForPageType(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
-        {
-            var subfolderPage = FindDocumentationParent(subfolder, documentationPageType, contentType, root);
-
-            if (subfolderPage == null)
-            {
-                return null;
-            }
-
-            var docPage = GetChildByDocType(subfolderPage, contentType.Id);
-
-            return docPage;
-        }
-
-        protected IContent? FindDocumentationPageForPageName(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
-        {
-            var subfolderPage = FindDocumentationParent(subfolder, documentationPageType, contentType, root);
-
-            if (subfolderPage == null || contentType.Name == null)
-            {
-                return null;
-            }
-
-            var docPage = GetChildByName(subfolderPage, contentType.Name);
-
-            return docPage;
-        }
-
-        protected IContent? FindDocumentationParent(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
-        {
-            var docsRootPage = GetChildByDocType(root, documentationPageType.Id);
-
-            if (docsRootPage == null)
-            {
-                return null;
-            }
-
-            return GetChildByName(docsRootPage, subfolder);
-        }
-
-        protected IContent? GetChildByDocType(IContent parent, int docTypeId)
-        {
-            var children = ContentService.GetPagedChildren(parent.Id, 0, 100, out _);
-            return children.FirstOrDefault(r => r.ContentTypeId == docTypeId);
-        }
-
-        protected IContent? GetChildByName(IContent parent, string childName)
-        {
-            var children = ContentService.GetPagedChildren(parent.Id, 0, 100, out _);
-            return children.FirstOrDefault(child => childName.Equals(child?.Name, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿namespace Xpedite.Generator.NextJs;
 
-public record NextJsBlockInput(string Name, List<PropertyTokens> Properties, List<PropertyTokens> Settings, string? VariantName = null)
-    : NextJsInput(Name, Properties, VariantName);
+public class NextJsBlockInput(string name, List<PropertyTokens> properties, List<PropertyTokens> settings, string? variantName = null) 
+    : NextJsInput(name, properties, variantName)
+{
+    public List<PropertyTokens> Settings { get; set; } = settings;
+}
 
 public record NextJsBlockTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<PropertyTokens>? Settings, List<string>? FieldRenderers, List<string>? RenderedSettings, string? VariantName = null)
     : NextJsTransformData(Name, Properties, FieldRenderers, VariantName);

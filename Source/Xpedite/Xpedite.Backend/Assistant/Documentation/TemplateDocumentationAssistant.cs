@@ -6,7 +6,8 @@ namespace Xpedite.Backend.Assistant.Documentation
     public class TemplateDocumentationAssistant(IContentService contentService,
         IContentEditingService contentEditingService,
         IContentTypeService contentTypeService,
-        XpediteSettings settings) : DocumentationAssistantBase<CheckInput, ActionInput>(contentService, contentEditingService, contentTypeService, settings)
+        DocumentationPageFinder documentationPageFinder,
+        XpediteSettings settings) : DocumentationAssistantBase<CheckInput, ActionInput>(contentService, contentEditingService, contentTypeService, documentationPageFinder, settings)
     {
         public override string ActionName => "createTemplateDocumentation";
 
@@ -14,7 +15,7 @@ namespace Xpedite.Backend.Assistant.Documentation
 
         protected override IContent? FindDocumentationPage(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
         {
-            return FindDocumentationPageForPageType(subfolder, documentationPageType, contentType, root);
+            return DocumentationPageFinder.FindDocumentationPageForPageType(subfolder, documentationPageType, contentType, root);
         }
     }
 }

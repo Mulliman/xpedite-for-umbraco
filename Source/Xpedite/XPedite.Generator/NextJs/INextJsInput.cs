@@ -2,7 +2,7 @@
 
 public interface INextJsInput
 {
-    string Name { get; init; }
+    string Name { get; }
 
-    List<PropertyTokens> Properties { get; init; }
+    List<PropertyTokens> Properties { get; }
 }

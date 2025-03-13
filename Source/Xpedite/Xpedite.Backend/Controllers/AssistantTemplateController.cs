@@ -25,15 +25,17 @@ namespace Xpedite.Backend.Controllers
     public class AssistantTemplateController(XpediteSettings settings,
         IBackOfficeSecurityAccessor backOfficeSecurityAccessor,
         BlueprintAssistant blueprintAssistant,
-        TemplateDocumentationAssistant templateDocumentationAssistant) : ManagementApiControllerBase
+        TemplateDocumentationAssistant templateDocumentationAssistant,
+        TemplateAllowedChildOfDocumentationPageAssistant allowedChildAssistant) : ManagementApiControllerBase
     {
         private readonly XpediteSettings _settings = settings;
         private readonly IBackOfficeSecurityAccessor _backOfficeSecurityAccessor = backOfficeSecurityAccessor;
         private readonly BlueprintAssistant _blueprintAssistant = blueprintAssistant;
         private readonly TemplateDocumentationAssistant _templateDocumentationAssistant = templateDocumentationAssistant;
+        private readonly TemplateAllowedChildOfDocumentationPageAssistant _allowedChildAssistant = allowedChildAssistant;
 
-        private List<IAssistantCheck<CheckInput>> Checks => [ _blueprintAssistant, _templateDocumentationAssistant];
-        private List<IAssistantAction<ActionInput>> Actions => [_blueprintAssistant, _templateDocumentationAssistant];
+        private List<IAssistantCheck<CheckInput>> Checks => [ _blueprintAssistant, _allowedChildAssistant, _templateDocumentationAssistant];
+        private List<IAssistantAction<ActionInput>> Actions => [_blueprintAssistant, _allowedChildAssistant, _templateDocumentationAssistant];
 
         [HttpPost("assistant-template-checks")]
         [MapToApiVersion("1.0")]

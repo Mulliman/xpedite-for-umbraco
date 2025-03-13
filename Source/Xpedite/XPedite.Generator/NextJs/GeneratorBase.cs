@@ -1,8 +1,23 @@
-﻿namespace Xpedite.Generator.NextJs;
+﻿using Umbraco.Cms.Core.Models;
 
-public record NextJsInput(string Name, List<PropertyTokens> Properties, string? VariantName = null) : INextJsInput;
+namespace Xpedite.Generator.NextJs;
 
-public record NextJsTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<string>? RenderedProperties, string? VariantName = null);
+public class NextJsInput(string name, List<PropertyTokens> properties, string? variantName = null, IContent? pageToCreateTestDataFrom = null) : INextJsInput
+{
+    public string Name { get; set; } = name;
+
+    public List<PropertyTokens> Properties { get; set; } = properties;
+
+    public string? VariantName { get; set; } = variantName;
+
+    public IContent? PageToCreateTestDataFrom { get; set; } = pageToCreateTestDataFrom;
+}
+
+public record NextJsTransformData(MultiCasedValue Name,
+    List<PropertyTokens>? Properties,
+    List<string>? RenderedProperties,
+    string? VariantName = null,
+    Dictionary<string, string>? TestJsonObjects = null);
 
 public abstract class GeneratorBase<TInput, TTransformData>(string rootDirectory, IFieldRenderer fieldRenderer)
     where TInput : NextJsInput

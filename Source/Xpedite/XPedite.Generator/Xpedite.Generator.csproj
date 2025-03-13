@@ -37,8 +37,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="CaseConverter" Version="2.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
 		<PackageReference Include="Scriban" Version="5.12.1" />
 		<PackageReference Include="Umbraco.Cms.Core" Version="[15.2.0,)" />
+		<PackageReference Include="Umbraco.Cms.Infrastructure" Version="15.2.0" />
+		<PackageReference Include="Umbraco.Cms.Api.Delivery" Version="15.2.0" />
 	</ItemGroup>
 
 </Project>

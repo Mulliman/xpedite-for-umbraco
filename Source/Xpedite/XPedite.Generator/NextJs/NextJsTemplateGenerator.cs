@@ -1,10 +1,21 @@
-﻿namespace Xpedite.Generator.NextJs;
+﻿using Xpedite.Generator.TestData;
 
-public class NextJsTemplateGenerator(string rootDirectory, IFieldRenderer fieldRenderer) : GeneratorBase<NextJsInput, NextJsTransformData>(rootDirectory, fieldRenderer)
+namespace Xpedite.Generator.NextJs;
+
+public class NextJsTemplateGenerator(string rootDirectory, IFieldRenderer fieldRenderer, PageTestDataGenerator pageTestDataGenerator)
+    : GeneratorBase<NextJsInput, NextJsTransformData>(rootDirectory, fieldRenderer)
 {
-    protected override Task<NextJsTransformData> CreateTransformData(NextJsInput input, string[] renderedFields)
+    private readonly PageTestDataGenerator _pageTestDataGenerator = pageTestDataGenerator;
+
+    protected override async Task<NextJsTransformData> CreateTransformData(NextJsInput input, string[] renderedFields)
     {
-        return Task.FromResult(new NextJsTransformData(new MultiCasedValue(input.Name), input.Properties, [.. renderedFields], input.VariantName));
+        var result = new NextJsTransformData(new MultiCasedValue(input.Name),
+            input.Properties,
+            [.. renderedFields],
+            input.VariantName,
+            await GetTestJson(input.PageToCreateTestDataFrom));
+
+        return result;
     }
 
     protected override async Task<GeneratedFile> GenerateFile(NextJsTransformData data, string filePathIncludingTokens)
@@ -20,5 +31,18 @@ public class NextJsTemplateGenerator(string rootDirectory, IFieldRenderer fieldR
     protected override string[] GetTemplateFilePaths(string? variant = null)
     {
         return FileManager.GetFilePaths(FileManager.TemplatesDirectory);
+    }
+
+    private async Task<Dictionary<string, string>?> GetTestJson(Umbraco.Cms.Core.Models.IContent? pageToCreateTestDataFrom)
+    {
+        var defaultValue = new Dictionary<string, string> { { "testData", "{ /* Fill in props with some test data */ }" } };
+
+        if (pageToCreateTestDataFrom?.Key == null)
+        {
+            return defaultValue;
+        }
+
+        var testData = await _pageTestDataGenerator.GeneratePageJson(pageToCreateTestDataFrom.Key);
+        return testData != null ? new Dictionary<string, string> { { testData.Value.Key, testData.Value.Value } } : defaultValue;
     }
 }

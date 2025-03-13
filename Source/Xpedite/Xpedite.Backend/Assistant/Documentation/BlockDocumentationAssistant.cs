@@ -6,7 +6,8 @@ namespace Xpedite.Backend.Assistant.Documentation
     public class BlockDocumentationAssistant(IContentService contentService,
         IContentEditingService contentEditingService,
         IContentTypeService contentTypeService,
-        XpediteSettings settings) : DocumentationAssistantBase<BlockCheckInput, BlockActionInput>(contentService, contentEditingService, contentTypeService, settings)
+        DocumentationPageFinder documentationPageFinder,
+        XpediteSettings settings) : DocumentationAssistantBase<BlockCheckInput, BlockActionInput>(contentService, contentEditingService, contentTypeService, documentationPageFinder, settings)
     {
         public override string ActionName => "createBlockDocumentation";
 
@@ -14,7 +15,7 @@ namespace Xpedite.Backend.Assistant.Documentation
 
         protected override IContent? FindDocumentationPage(string subfolder, IContentType documentationPageType, IContentType contentType, IContent root)
         {
-            return FindDocumentationPageForPageName(subfolder, documentationPageType, contentType, root);
+            return DocumentationPageFinder.FindDocumentationPageForPageName(subfolder, documentationPageType, contentType.Name, root);
         }
     }
 }
