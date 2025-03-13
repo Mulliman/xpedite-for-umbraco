@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { TypedUmbracoNode } from "@/umbraco/types";
 import {{ name.pascal_case }}, {{"{"}} {{ name.pascal_case }}Props  {{"}"}} from '../{{ name.pascal_case }}';
 
@@ -8,7 +8,7 @@ describe('{{ name.pascal_case }}', () => {
     {{ for test in test_json_objects }}
     const {{ test.key }} = {{test.value}} as TypedUmbracoNode<{{name.pascal_case}}Props>;
 
-    it('matches snapshot ({{test.key}})', () => {
+    it('matches snapshot ({{test.key}})', async () => {
         let asFragment;
     
         await act(async () => {
@@ -18,7 +18,7 @@ describe('{{ name.pascal_case }}', () => {
         expect(asFragment!()).toMatchSnapshot();
     });
 
-    it('contains expected element example ({{test.key}})', () => {
+    it('contains expected element example ({{test.key}})', async () => {
         let container;
 
         await act(async () => {
