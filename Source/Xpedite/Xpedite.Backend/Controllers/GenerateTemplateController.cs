@@ -31,20 +31,17 @@ namespace Xpedite.Backend.Controllers
         private readonly TemplateMapper _templateMapper;
         private readonly CodebaseUpdater _codebaseUpdater;
         private readonly TestItemResolver _testItemResolver;
-        private readonly IContentService _contentService;
 
         public GenerateTemplateController(XpediteSettings settings,
             TemplateMapper templateMapper,
             CodebaseUpdater codebaseUpdater,
             PageTestDataGenerator pageTestDataGenerator,
-            TestItemResolver testItemResolver,
-            IContentService contentService)
+            TestItemResolver testItemResolver)
         {
             _settings = settings;
             _templateMapper = templateMapper;
             _codebaseUpdater = codebaseUpdater;
             _testItemResolver = testItemResolver;
-            _contentService = contentService;
 
             var fieldRenderer = new FileBasedFieldRenderer(_settings.TemplatesRootFolderPath);
             _generator = new NextJsTemplateGenerator(settings.TemplatesRootFolderPath, fieldRenderer, pageTestDataGenerator);

@@ -31,7 +31,7 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
       }
     | undefined;
 
-
+  // #region Construction and Deconstruction
 
   constructor() {
     super();
@@ -47,21 +47,9 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     this.#context?.clearApiModel();
   }
 
-  #createApiModel() {
-    if (!this._chosenContentType || !this._selectedFields?.length) {
-      return;
-    }
+  // #endregion
 
-    const data = {
-      documentTypeId: this._chosenContentType,
-      selectedProperties: this._selectedFields,
-      componentName: this._options?.name,
-      variantName: this._options?.variant,
-      testItem: this._options?.testItem,
-    } as GenerateApiModel;
-
-    return data;
-  }
+  // #region Content Type
 
   #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
     const selectedType = event.target.selection[0];
@@ -75,78 +63,6 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     }
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
-  }
-
-  #setOptions(event: CustomEvent & { target: HTMLInputElement }, propertyName: string) {
-    this.#setOptionsValue(propertyName, event.target.value);
-  }
-
-  #setOptionsValue(propertyName: string, propertyValue: any) {
-    this._options = {
-      ...this._options,
-      [propertyName]: propertyValue,
-    } as { name: string; };
-
-    this.dispatchEvent(new UmbPropertyValueChangeEvent());
-
-    this.#refreshApiModel();
-  }
-
-  #onVariantChange(event: UUIBooleanInputEvent) {
-    var variant = event.target.checked ? "includingPageData" : undefined;
-
-    this.#setOptionsValue("variant", variant);
-  }
-
-  #selectFields(event: CustomEvent) {
-    const fieldPicker = event.target as XpediteFieldPicker;
-    this._selectedFields = fieldPicker.value;
-
-    this.#refreshApiModel();
-  }
-
-  #refreshApiModel() {
-    const newModel = this.#createApiModel();
-
-    if (newModel) {
-      this.#context?.updateApiModel(newModel);
-    }
-  }
-
-  #renderOptionsStep() {
-    if (!this._chosenContentType) return null;
-
-    return html`
-      <div class="card-gap">
-        <uui-box headline="Options">
-          <umb-property-layout label="Component name" orientation="vertical">
-            <div id="editor" slot="editor">
-              <uui-input
-                label="Name"
-                placeholder="Enter name"
-                @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}
-              ></uui-input>
-            </div>
-          </umb-property-layout>
-
-          <umb-property-layout label="Include generic page data" orientation="vertical">
-            <div id="editor" slot="editor">
-              <uui-toggle .checked=${this._options?.variant == "includingPageData"} @change=${(e: UUIBooleanInputEvent) => this.#onVariantChange(e)}>
-              </uui-toggle>
-            </div>
-          </umb-property-layout>
-
-          <umb-property-layout label="Test Item" orientation="vertical">
-            <div id="editor" slot="editor">
-            <umb-input-document
-              .selection=${(this._options?.testItem ? [this._options?.testItem] : [])}
-              max=1
-              @change=${(e: CustomEvent & { target: any }) => this.#setOptionsValue("testItem", e.target.selection?.at(0))}></umb-input-document>
-            </div>
-          </umb-property-layout>
-        </uui-box>
-      </div>
-    `;
   }
 
   #renderChooseDocumentTypeStep() {
@@ -165,6 +81,17 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     `;
   }
 
+  // #endregion
+
+  // #region Selected Fields
+
+  #selectFields(event: CustomEvent) {
+    const fieldPicker = event.target as XpediteFieldPicker;
+    this._selectedFields = fieldPicker.value;
+
+    this.#refreshApiModel();
+  }
+
   #renderChooseFieldsStep() {
     if (!this._chosenContentType) return null;
 
@@ -175,6 +102,98 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
       </uui-box>
     `;
   }
+
+  // #endregion
+
+  // #region Options
+
+  #onSetOptions(event: CustomEvent & { target: HTMLInputElement }, propertyName: string) {
+    this.#onSetOptionsValue(propertyName, event.target.value);
+  }
+
+  #onSetOptionsValue(propertyName: string, propertyValue: any) {
+    this._options = {
+      ...this._options,
+      [propertyName]: propertyValue,
+    } as { name: string; };
+
+    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+
+    this.#refreshApiModel();
+  }
+
+  #onVariantChange(event: UUIBooleanInputEvent) {
+    var variant = event.target.checked ? "includingPageData" : undefined;
+
+    this.#onSetOptionsValue("variant", variant);
+  }
+
+  #renderOptionsStep() {
+    if (!this._chosenContentType) return null;
+
+    return html`
+      <div class="card-gap">
+        <uui-box headline="Options">
+          <umb-property-layout label="Component name" orientation="vertical">
+            <div id="editor" slot="editor">
+              <uui-input
+                label="Name"
+                placeholder="Enter name"
+                @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#onSetOptions(e, "name")}
+              ></uui-input>
+            </div>
+          </umb-property-layout>
+
+          <umb-property-layout label="Include generic page data" orientation="vertical">
+            <div id="editor" slot="editor">
+              <uui-toggle .checked=${this._options?.variant == "includingPageData"} @change=${(e: UUIBooleanInputEvent) => this.#onVariantChange(e)}>
+              </uui-toggle>
+            </div>
+          </umb-property-layout>
+
+          <umb-property-layout label="Test Item" orientation="vertical">
+            <div id="editor" slot="editor">
+              <umb-input-document
+                .selection=${(this._options?.testItem ? [this._options?.testItem] : [])}
+                max=1
+                @change=${(e: CustomEvent & { target: any }) => this.#onSetOptionsValue("testItem", e.target.selection?.at(0))}
+              ></umb-input-document>
+            </div>
+          </umb-property-layout>
+        </uui-box>
+      </div>
+    `;
+  }
+
+  // #endregion
+
+  // #region API Model
+
+  #createApiModel() {
+    if (!this._chosenContentType || !this._selectedFields?.length) {
+      return;
+    }
+
+    const data = {
+      documentTypeId: this._chosenContentType,
+      selectedProperties: this._selectedFields,
+      componentName: this._options?.name,
+      variantName: this._options?.variant,
+      testItem: this._options?.testItem,
+    } as GenerateApiModel;
+
+    return data;
+  }
+
+  #refreshApiModel() {
+    const newModel = this.#createApiModel();
+
+    if (newModel) {
+      this.#context?.updateApiModel(newModel);
+    }
+  }
+
+  // #endregion
 
   render() {
     return html` <div>${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()} ${this.#renderOptionsStep()}</div> `;
@@ -188,12 +207,12 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
       }
 
       umb-property-layout:first-child {
-				padding-top: 0;
-			}
+        padding-top: 0;
+      }
 
-			umb-property-layout:last-child {
-				padding-bottom: 0;
-			}
+      umb-property-layout:last-child {
+        padding-bottom: 0;
+      }
     `,
   ];
 }

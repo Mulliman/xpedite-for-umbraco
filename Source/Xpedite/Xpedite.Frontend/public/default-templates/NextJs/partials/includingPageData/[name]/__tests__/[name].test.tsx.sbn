@@ -5,23 +5,33 @@ import {{ name.pascal_case }}, {{"{"}} {{ name.pascal_case }}Props  {{"}"}} from
 
 describe('{{ name.pascal_case }}', () => {
 
-    const testData = {
-        // Fill in props with some test data
-    } as TypedUmbracoNode<{{name.pascal_case}}Props>;
+{{ for test in test_json_objects }}
+const {{ test.key }} = {{test.value}} as TypedUmbracoNode<{{name.pascal_case}}Props>;
+
+it('matches snapshot ({{test.key}})', async () => {
+    let asFragment;
+
+    await act(async () => {
+        ({ asFragment } = render(<{{ name.pascal_case }} {{"{"}}...{{ test.key }}{{"}"}} />));
+    });
+
+    expect(asFragment!()).toMatchSnapshot();
+});
+
+it('contains expected element example ({{test.key}})', async () => {
+    let container;
+
+    await act(async () => {
+        ({ container } = render(<{{ name.pascal_case }} {{"{"}}...{{ test.key }}{{"}"}} />));
+    });
+
+    expect(container!.innerHTML).toContain('Replace with expected data');
+});
+{{ end }}
 
     const emptyTestData = {
         // Fill in props with with the empty state
     } as TypedUmbracoNode<{{name.pascal_case}}Props>;
-
-    it('matches snapshot', () => {
-        const { asFragment } = render(<{{ name.pascal_case }} {...testData} />);
-        expect(asFragment()).toMatchSnapshot();
-    });
-
-    it('contains expected element example', () => {
-        const { container } = render(<{{ name.pascal_case }} {...testData} />);
-        expect(container.innerHTML).toContain('Replace with expected data');
-    });
 
     it('renders valid output when properties are empty', () => {
         const { container } = render(<{{ name.pascal_case }} {...emptyTestData} />);
