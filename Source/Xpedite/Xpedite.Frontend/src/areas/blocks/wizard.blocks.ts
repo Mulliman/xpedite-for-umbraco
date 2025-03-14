@@ -34,6 +34,7 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     | {
         name: string;
         createComponentPage: boolean;
+        testItem?: string;
       }
     | undefined;
 
@@ -42,6 +43,8 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
 
   @state()
   _selectedSettings: Array<string> = [];
+
+  // #region Construction and Deconstruction
 
   constructor() {
     super();
@@ -74,6 +77,10 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     this.#assistantContext?.clearApiModel();
   }
 
+  // #endregion
+
+  // #region API Model
+
   #createApiModel() {
     if (!this._chosenContentType || !this._selectedFields?.length) {
       return;
@@ -85,10 +92,191 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
       componentName: this._options?.name,
       settingsTypeId: this._chosenSettingsType,
       selectedSettings: this._selectedSettings,
+      testItem: this._options?.testItem
     } as GenerateBlockApiModel;
 
     return data;
   }
+
+  #refreshApiModel() {
+    const newModel = this.#createApiModel();
+
+    if (newModel) {
+      this.#context?.updateApiModel(newModel);
+    }
+  }
+
+  #resetState() {
+    this._chosenContentType = undefined;
+    this._selectedFields = [];
+    this.#context?.clearApiModel();
+    this.#assistantContext?.clearApiModel();
+  }
+
+  // #endregion
+
+  // #region Content Type
+
+  #onSelectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
+    const selectedType = event.target.selection[0];
+
+    if (selectedType) {
+      this._chosenContentType = selectedType;
+    } else {
+      this.#resetState();
+    }
+
+    this.#updateAssistant();
+
+    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+  }
+
+  #renderChooseDocumentTypeStep() {
+    return html`
+      <uui-box>
+        <div slot="headline">Choose existing Document Type</div>
+
+        <umb-input-document-type
+          .elementTypesOnly=${true}
+          .selection=${this._chosenContentType ? [this._chosenContentType] : []}
+          max="1"
+          min="1"
+          @change=${this.#onSelectContentType}
+        ></umb-input-document-type>
+      </uui-box>
+    `;
+  }
+
+  // #endregion
+
+  // #region Selected Fields
+
+  #onSelectFields(event: CustomEvent) {
+    const fieldPicker = event.target as XpediteFieldPicker;
+    this._selectedFields = fieldPicker.value;
+
+    this.#refreshApiModel();
+  }
+
+  #renderChooseFieldsStep() {
+    if (!this._chosenContentType) return null;
+
+    return html`
+      <uui-box>
+        <div slot="headline">Choose fields</div>
+
+        <xpedite-field-picker @change=${this.#onSelectFields} .documentTypeId=${this!._chosenContentType}></xpedite-field-picker>
+      </uui-box>
+    `;
+  }
+
+  // #endregion
+
+  // #region Settings
+
+  #onSelectSettingsType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
+    const selectedType = event.target.selection[0];
+
+    if (selectedType) {
+      this._chosenSettingsType = selectedType;
+    } else {
+      this._chosenSettingsType = undefined;
+      this._selectedSettings = [];
+    }
+
+    this.#updateAssistant();
+
+    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+  }
+
+  #onSelectSettings(event: CustomEvent) {
+    const fieldPicker = event.target as XpediteFieldPicker;
+    this._selectedSettings = fieldPicker.value;
+
+    this.#refreshApiModel();
+  }
+
+  #renderChooseSettingsDocumentTypeStep() {
+    return html`
+      <uui-box>
+        <div slot="headline">Choose settings Document Type</div>
+
+        <umb-input-document-type
+          .elementTypesOnly=${true}
+          .selection=${this._chosenSettingsType ? [this._chosenSettingsType] : []}
+          max="1"
+          min="1"
+          @change=${this.#onSelectSettingsType}
+        ></umb-input-document-type>
+      </uui-box>
+    `;
+  }
+
+  #renderChooseSettingsStep() {
+    if (!this._chosenSettingsType) return null;
+
+    return html`
+      <uui-box>
+        <div slot="headline">Choose settings</div>
+
+        <xpedite-field-picker @change=${this.#onSelectSettings} .documentTypeId=${this!._chosenSettingsType}></xpedite-field-picker>
+      </uui-box>
+    `;
+  }
+
+  // #endregion
+
+  // #region Options
+
+  #onSetOptions(event: CustomEvent & { target: HTMLInputElement }, propertyName: string) {
+    this._options = { ...this._options, [propertyName]: event.target.value } as { name: string; createComponentPage: boolean };
+
+    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+
+    this.#refreshApiModel();
+  }
+
+  #onSetOptionsValue(propertyName: string, propertyValue: any) {
+    this._options = {
+      ...this._options,
+      [propertyName]: propertyValue,
+    } as { name: string; createComponentPage: boolean };
+
+    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+
+    this.#refreshApiModel();
+  }
+
+  #renderOptionsStep() {
+    if (!this._chosenContentType) return null;
+
+    return html`
+      <uui-box class="card-gap" headline="Options">
+        <umb-property-layout label="Component name" orientation="vertical">
+          <div id="editor" slot="editor">
+            <uui-input
+              label="Name"
+              placeholder="Enter name"
+              @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#onSetOptions(e, "name")}
+            ></uui-input>
+          </div>
+        </umb-property-layout>
+        <umb-property-layout label="Test Item" orientation="vertical">
+          <div id="editor" slot="editor">
+            <umb-input-document
+              .selection=${this._options?.testItem ? [this._options?.testItem] : []}
+              max="1"
+              @change=${(e: CustomEvent & { target: any }) => this.#onSetOptionsValue("testItem", e.target.selection?.at(0))}
+            ></umb-input-document>
+          </div>
+        </umb-property-layout>
+      </uui-box>
+    `;
+  }
+
+  // #endregion
+
+  // #region Assistant
 
   #updateAssistant() {
     if (!this.#assistantContext) {
@@ -108,146 +296,6 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
     this.#assistantContext.updateApiModel(model);
   }
 
-  #resetState() {
-    this._chosenContentType = undefined;
-    this._selectedFields = [];
-    this.#context?.clearApiModel();
-    this.#assistantContext?.clearApiModel();
-  }
-
-  #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
-    const selectedType = event.target.selection[0];
-
-    if (selectedType) {
-      this._chosenContentType = selectedType;
-    } else {
-      this.#resetState();
-    }
-    
-    this.#updateAssistant();
-
-    this.dispatchEvent(new UmbPropertyValueChangeEvent());
-  }
-
-  #setOptions(event: CustomEvent & { target: HTMLInputElement }, propertyName: string) {
-    this._options = { ...this._options, [propertyName]: event.target.value } as { name: string; createComponentPage: boolean };
-
-    this.dispatchEvent(new UmbPropertyValueChangeEvent());
-
-    this.#refreshApiModel();
-  }
-
-  #selectFields(event: CustomEvent) {
-    const fieldPicker = event.target as XpediteFieldPicker;
-    this._selectedFields = fieldPicker.value;
-
-    this.#refreshApiModel();
-  }
-
-  #refreshApiModel() {
-    const newModel = this.#createApiModel();
-
-    if (newModel) {
-      this.#context?.updateApiModel(newModel);
-    }
-  }
-
-  #selectSettingsType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
-    const selectedType = event.target.selection[0];
-
-    if (selectedType) {
-      this._chosenSettingsType = selectedType;
-    } else {
-      this._chosenSettingsType = undefined;
-      this._selectedSettings = [];
-    }
-
-    this.#updateAssistant();
-
-    this.dispatchEvent(new UmbPropertyValueChangeEvent());
-  }
-
-  #selectSettings(event: CustomEvent) {
-    const fieldPicker = event.target as XpediteFieldPicker;
-    this._selectedSettings = fieldPicker.value;
-
-    this.#refreshApiModel();
-  }
-
-  #renderOptionsStep() {
-    if (!this._chosenContentType) return null;
-
-    return html`
-      <uui-box class="card-gap" headline="Options">
-        <umb-property-layout label="Component name" orientation="vertical">
-          <div id="editor" slot="editor">
-            <uui-input
-              label="Name"
-              placeholder="Enter name"
-              @input=${(e: CustomEvent & { target: HTMLInputElement }) => this.#setOptions(e, "name")}
-            ></uui-input>
-          </div>
-        </umb-property-layout>
-      </uui-box>
-    `;
-  }
-
-  #renderChooseDocumentTypeStep() {
-    return html`
-      <uui-box>
-        <div slot="headline">Choose existing Document Type</div>
-
-        <umb-input-document-type
-          .elementTypesOnly=${true}
-          .selection=${this._chosenContentType ? [this._chosenContentType] : []}
-          max="1"
-          min="1"
-          @change=${this.#selectContentType}
-        ></umb-input-document-type>
-      </uui-box>
-    `;
-  }
-
-  #renderChooseFieldsStep() {
-    if (!this._chosenContentType) return null;
-
-    return html`
-      <uui-box>
-        <div slot="headline">Choose fields</div>
-
-        <xpedite-field-picker @change=${this.#selectFields} .documentTypeId=${this!._chosenContentType}></xpedite-field-picker>
-      </uui-box>
-    `;
-  }
-
-  #renderChooseSettingsDocumentTypeStep() {
-    return html`
-      <uui-box>
-        <div slot="headline">Choose settings Document Type</div>
-
-        <umb-input-document-type
-          .elementTypesOnly=${true}
-          .selection=${this._chosenSettingsType ? [this._chosenSettingsType] : []}
-          max="1"
-          min="1"
-          @change=${this.#selectSettingsType}
-        ></umb-input-document-type>
-      </uui-box>
-    `;
-  }
-
-  #renderChooseSettingsStep() {
-    if (!this._chosenSettingsType) return null;
-
-    return html`
-      <uui-box>
-        <div slot="headline">Choose settings</div>
-
-        <xpedite-field-picker @change=${this.#selectSettings} .documentTypeId=${this!._chosenSettingsType}></xpedite-field-picker>
-      </uui-box>
-    `;
-  }
-
   async #handleAction(actionName: string) {
     if (this.#assistantContext) {
       await this.#assistantContext.runAction(actionName);
@@ -262,6 +310,8 @@ export class XpediteBlocksWizard extends UmbElementMixin(LitElement) {
       }
     }
   }
+
+  // #endregion
 
   render() {
     return html`

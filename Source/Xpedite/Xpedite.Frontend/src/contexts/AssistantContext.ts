@@ -29,6 +29,8 @@ export default abstract class AssistantContext<T> extends UmbControllerBase {
   }
   
   async performChecks() {
+    console.log("performChecks");
+    
     if (!this.isValidApiModel()) {
       return;
     }

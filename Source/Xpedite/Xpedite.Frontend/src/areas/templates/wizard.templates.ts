@@ -8,7 +8,7 @@ import { UmbTextStyles } from "@umbraco-cms/backoffice/style";
 import "../../elements/field-picker";
 import "../../elements/assistant";
 
-import { CheckResult, GenerateApiModel } from "../../api";
+import { CheckInput, CheckResult, GenerateApiModel } from "../../api";
 import XpediteFieldPicker from "../../elements/field-picker";
 import XpediteTemplatesContext, { TEMPLATES_CONTEXT_TOKEN } from "./context.templates";
 import { XpediteStyles } from "../../styles";
@@ -34,6 +34,7 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
       }
     | undefined;
 
+  @state()
   _checks: Array<CheckResult> | undefined;
 
   // #region Construction and deconstruction
@@ -92,15 +93,15 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
   async #onSelectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
     const selectedType = event.target.selection[0];
 
+    console.log("onSelectContentType", event.target.selection[0]);
+
     if (selectedType) {
       this._chosenContentType = selectedType;
-
-      if (this.#assistantContext) {
-        this.#assistantContext.updateApiModel({ documentTypeId: selectedType });
-      }
     } else {
       this.#resetState();
     }
+
+    this.#updateAssistant();
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
   }
@@ -180,6 +181,23 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
       }
     }
   }
+
+  #updateAssistant() {
+      if (!this.#assistantContext) {
+        return;
+      }
+  
+      if (!this._chosenContentType) {
+        this.#assistantContext.clearApiModel();
+        return;
+      }
+  
+      var model = {
+        documentTypeId: this._chosenContentType,
+      } as CheckInput;
+  
+      this.#assistantContext.updateApiModel(model);
+    }
 
   // #endregion
 

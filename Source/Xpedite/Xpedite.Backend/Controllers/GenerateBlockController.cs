@@ -9,8 +9,10 @@ using Umbraco.Cms.Web.Common.Authorization;
 using Xpedite.Backend.Codebase;
 using Xpedite.Backend.InputMappers;
 using Xpedite.Backend.Models;
+using Xpedite.Backend.TestItems;
 using Xpedite.Generator;
 using Xpedite.Generator.NextJs;
+using Xpedite.Generator.TestData;
 
 namespace Xpedite.Backend.Controllers
 {
@@ -26,15 +28,20 @@ namespace Xpedite.Backend.Controllers
         private readonly NextJsBlockGenerator _generator;
         private readonly BlockMapper _mapper;
         private readonly CodebaseUpdater _codebaseUpdater;
+        private readonly TestItemResolver _testItemResolver;
 
-        public GenerateBlockController(XpediteSettings settings, BlockMapper mapper, CodebaseUpdater codebaseUpdater)
+        public GenerateBlockController(XpediteSettings settings,
+            BlockMapper mapper,
+            CodebaseUpdater codebaseUpdater,
+            BlockTestDataGenerator blockTestDataGenerator,
+            TestItemResolver testItemResolver)
         {
             _settings = settings;
             _mapper = mapper;
             _codebaseUpdater = codebaseUpdater;
-
+            _testItemResolver = testItemResolver;
             var fieldRenderer = new FileBasedFieldRenderer(_settings.TemplatesRootFolderPath);
-            _generator = new NextJsBlockGenerator(settings.TemplatesRootFolderPath, fieldRenderer);
+            _generator = new NextJsBlockGenerator(settings.TemplatesRootFolderPath, fieldRenderer, blockTestDataGenerator);
         }
 
         [HttpPost("generate-block")]
@@ -70,6 +77,10 @@ namespace Xpedite.Backend.Controllers
         private async Task<GeneratedFiles> GenerateBlockFiles(GenerateBlockApiModel model)
         {
             var inputData = await _mapper.MapToNextJsBlockInput(model);
+
+            inputData.PageToCreateTestDataFrom = _testItemResolver.FindSpecificItem(model?.TestItem)
+                ?? await _testItemResolver.FindDocumentationPageForBlock(model?.DocumentTypeId);
+
             var generatedFiles = await _generator.GenerateFiles(inputData);
 
             generatedFiles.GroupName = inputData.Name;

@@ -1,21 +1,40 @@
-﻿namespace Xpedite.Generator.NextJs;
+﻿using Xpedite.Generator.TestData;
 
-public class NextJsBlockInput(string name, List<PropertyTokens> properties, List<PropertyTokens> settings, string? variantName = null) 
+namespace Xpedite.Generator.NextJs;
+
+public class NextJsBlockInput(string name, string contentTypeAlias, string? settingsTypeAlias, List<PropertyTokens> properties, List<PropertyTokens> settings, string? variantName = null) 
     : NextJsInput(name, properties, variantName)
 {
+    public string ContentTypeAlias { get; } = contentTypeAlias;
+
+    public string? SettingsTypeAlias { get; } = settingsTypeAlias;
+
     public List<PropertyTokens> Settings { get; set; } = settings;
 }
 
-public record NextJsBlockTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties, List<PropertyTokens>? Settings, List<string>? FieldRenderers, List<string>? RenderedSettings, string? VariantName = null)
-    : NextJsTransformData(Name, Properties, FieldRenderers, VariantName);
+public record NextJsBlockTransformData(MultiCasedValue Name, List<PropertyTokens>? Properties,
+    List<PropertyTokens>? Settings,
+    List<string>? FieldRenderers,
+    List<string>? RenderedSettings,
+    string? VariantName = null,
+    Dictionary<string, string>? TestJsonObjects = null)
+    : NextJsTransformData(Name, Properties, FieldRenderers, VariantName, TestJsonObjects);
 
-public class NextJsBlockGenerator(string rootDirectory, IFieldRenderer fieldRenderer) : GeneratorBase<NextJsBlockInput, NextJsBlockTransformData>(rootDirectory, fieldRenderer)
+public class NextJsBlockGenerator(string rootDirectory, IFieldRenderer fieldRenderer, BlockTestDataGenerator blockTestDataGenerator) : GeneratorBase<NextJsBlockInput, NextJsBlockTransformData>(rootDirectory, fieldRenderer)
 {
+    private readonly BlockTestDataGenerator _blockTestDataGenerator = blockTestDataGenerator;
+
     protected override async Task<NextJsBlockTransformData> CreateTransformData(NextJsBlockInput input, string[] renderedFields)
     {
         var renderedSettings = await GetRenderedSettings(input);
 
-        var model = new NextJsBlockTransformData(new MultiCasedValue(input.Name), input.Properties, input.Settings, [.. renderedFields], [.. renderedSettings], input.VariantName);
+        var model = new NextJsBlockTransformData(new MultiCasedValue(input.Name),
+            input.Properties,
+            input.Settings,
+            [.. renderedFields],
+            [.. renderedSettings],
+            input.VariantName,
+            await GetTestJson(input.PageToCreateTestDataFrom, input.ContentTypeAlias, input.SettingsTypeAlias));
 
         return model;
     }
@@ -38,5 +57,18 @@ public class NextJsBlockGenerator(string rootDirectory, IFieldRenderer fieldRend
     private async Task<string[]> GetRenderedSettings(NextJsBlockInput input)
     {
         return await GetRenderedFields(input.Settings);
+    }
+
+    private async Task<Dictionary<string, string>?> GetTestJson(Umbraco.Cms.Core.Models.IContent? pageToCreateTestDataFrom, string contentTypeAlias, string? settingsTypeAlias)
+    {
+        var defaultValue = new Dictionary<string, string> { { "testData", "{ /* Fill in props with some test data */ }" } };
+
+        if (pageToCreateTestDataFrom?.Key == null)
+        {
+            return defaultValue;
+        }
+
+        var testData = await _blockTestDataGenerator.GenerateBlocksJson(pageToCreateTestDataFrom.Key, contentTypeAlias, settingsTypeAlias);
+        return testData?.Count > 0 ? testData : defaultValue;
     }
 }

@@ -4,9 +4,10 @@ using Xpedite.Backend.Assistant.Documentation;
 
 namespace Xpedite.Backend.TestItems;
 
-public class TestItemResolver(IContentService contentService, DocumentationPageFinder documentationPageFinder, XpediteSettings settings)
+public class TestItemResolver(IContentService contentService, IContentTypeService contentTypeService, DocumentationPageFinder documentationPageFinder, XpediteSettings settings)
 {
     protected readonly IContentService ContentService = contentService;
+    protected readonly IContentTypeService ContentTypeService = contentTypeService;
     protected readonly DocumentationPageFinder DocumentationPageFinder = documentationPageFinder;
     protected readonly XpediteSettings Settings = settings;
 
@@ -30,5 +31,24 @@ public class TestItemResolver(IContentService contentService, DocumentationPageF
         return await DocumentationPageFinder.FindDocumentationPageForPageType(Settings.DocumentationTemplatesSubfolder,
                 Settings.DocumentationDocumentTypeAlias,
                 documentTypeId.Value);
+    }
+
+    public async Task<IContent?> FindDocumentationPageForBlock(Guid? elementTypeId)
+    {
+        if (elementTypeId == null || !elementTypeId.HasValue)
+        {
+            return null;
+        }
+
+        var contentType = await ContentTypeService.GetAsync(elementTypeId.Value);
+
+        if (contentType?.Name == null)
+        {
+            return null;
+        }
+
+        return DocumentationPageFinder.FindDocumentationPageForPageName(Settings.DocumentationBlocksSubfolder,
+                Settings.DocumentationDocumentTypeAlias,
+                contentType.Name);
     }
 }

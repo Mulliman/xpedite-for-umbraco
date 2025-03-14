@@ -12,23 +12,23 @@ public class BlockMapper(IContentTypeService contentTypeService, IDataTypeServic
     public async Task<NextJsBlockInput> MapToNextJsBlockInput(GenerateBlockApiModel model)
     {
         var contentType = ContentTypeService.Get(model.DocumentTypeId) ?? throw new ArgumentException("Invalid document type ID", nameof(model.DocumentTypeId));
+        var settingsContentType = model.SettingsTypeId != null ? ContentTypeService.Get(model.SettingsTypeId.Value) : null;
 
         var propertyTokens = await GeneratePropertyTokens(model, contentType);
-        var settingTokens = await CreateSettingTokens(model);
+        var settingTokens = await CreateSettingTokens(model, settingsContentType);
 
         var name = GetComponentName(model, contentType);
 
-        return new NextJsBlockInput(name, propertyTokens, settingTokens, model.VariantName);
+        return new NextJsBlockInput(name, contentType.Alias, settingsContentType?.Alias, propertyTokens, settingTokens, model.VariantName);
     }
 
-    private async Task<List<PropertyTokens>> CreateSettingTokens(GenerateBlockApiModel model)
+    private async Task<List<PropertyTokens>> CreateSettingTokens(GenerateBlockApiModel model, IContentType? settingsContentType)
     {
-        if (model.SettingsTypeId == null)
+        if (settingsContentType == null)
         {
             return [];
         }
 
-        var settingsContentType = ContentTypeService.Get(model.SettingsTypeId.Value);
         var settingTokens = settingsContentType != null ? await GenerateSettingTokens(model, settingsContentType) : [];
 
         return settingTokens;

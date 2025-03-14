@@ -31,6 +31,23 @@ namespace Xpedite.Backend.Assistant.Documentation
             return null;
         }
 
+        public IContent? FindDocumentationPageForPageType(string subfolder, IContentType documentationPageType, IContentType contentTypeToFind)
+        {
+            var roots = _contentService.GetRootContent();
+
+            foreach (var root in roots)
+            {
+                var foundItem = FindDocumentationPageForPageType(subfolder, documentationPageType, contentTypeToFind, root);
+
+                if (foundItem != null)
+                {
+                    return foundItem;
+                }
+            }
+
+            return null;
+        }
+
         public IContent? FindDocumentationPageForPageType(string subfolder, IContentType documentationPageType, IContentType contentTypeToFind, IContent root)
         {
             var subfolderPage = FindDocumentationParent(subfolder, documentationPageType, root);
@@ -43,6 +60,31 @@ namespace Xpedite.Backend.Assistant.Documentation
             var docPage = GetChildByDocType(subfolderPage, contentTypeToFind.Id);
 
             return docPage;
+        }
+
+        public IContent? FindDocumentationPageForPageName(string subfolder, string documentationPageTypeAlias, string pageName)
+        {
+            var documentationPageType = ContentTypeService.Get(documentationPageTypeAlias)
+                ?? throw new ArgumentException($"Documentation content type {documentationPageTypeAlias} does not exist");
+
+            return FindDocumentationPageForPageName(subfolder, documentationPageType, pageName);
+        }
+
+        public IContent? FindDocumentationPageForPageName(string subfolder, IContentType documentationPageType, string pageName)
+        {
+            var roots = _contentService.GetRootContent();
+
+            foreach (var root in roots)
+            {
+                var foundItem = FindDocumentationPageForPageName(subfolder, documentationPageType, pageName, root);
+
+                if (foundItem != null)
+                {
+                    return foundItem;
+                }
+            }
+
+            return null;
         }
 
         public IContent? FindDocumentationPageForPageName(string subfolder, IContentType documentationPageType, string pageName, IContent root)
