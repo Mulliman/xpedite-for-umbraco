@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { TypedUmbracoNode } from "@/umbraco/types";
 import {{ name.pascal_case }}, {{"{"}} {{ name.pascal_case }}Props  {{"}"}} from '../{{ name.pascal_case }}';
 

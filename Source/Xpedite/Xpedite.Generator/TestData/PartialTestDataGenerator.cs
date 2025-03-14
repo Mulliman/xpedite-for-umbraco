@@ -27,7 +27,7 @@ namespace Xpedite.Generator.TestData
         private readonly IApiContentResponseBuilder _apiContentResponseBuilder = apiContentResponseBuilder;
         private readonly IApiPropertyRenderer _propertyRenderer = propertyRenderer;
 
-        public async Task<KeyValuePair<string, string>?> GeneratePageJson(Guid id)
+        public async Task<KeyValuePair<string, string>?> GeneratePageJson(Guid id, bool isEntirePage)
         {
             var contentItem = await _publishedContentCache.GetByIdAsync(id, true);
 
@@ -36,20 +36,8 @@ namespace Xpedite.Generator.TestData
                 return null;
             }
 
-            return GeneratePartialJson(contentItem);
+            return isEntirePage ? GeneratePageJson(contentItem) : GeneratePartialJson(contentItem);
         }
-
-        //public async Task<KeyValuePair<string, string>?> GeneratePageJson(string path)
-        //{
-        //    var contentItem = _publishedContentCache.GetByRoute(true, path);
-
-        //    if (contentItem == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    return GeneratePageJson(contentItem);
-        //}
 
         private KeyValuePair<string, string>? GeneratePageJson(IPublishedContent? contentItem)
         {

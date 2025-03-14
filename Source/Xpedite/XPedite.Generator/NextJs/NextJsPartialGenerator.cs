@@ -8,6 +8,7 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
     private readonly PartialTestDataGenerator _partialTestDataGenerator = partialTestDataGenerator;
 
     public const string DefaultVariantName = "default";
+    public static readonly string[] VariantNamesThatTestWithAllPageData = [ "includingPageData" ];
 
     protected override async Task<NextJsTransformData> CreateTransformData(NextJsInput input, string[] renderedFields)
     {
@@ -15,7 +16,7 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
             input.Properties, 
             [.. renderedFields], 
             input.VariantName,
-            await GetTestJson(input.PageToCreateTestDataFrom));
+            await GetTestJson(input.PageToCreateTestDataFrom, input.VariantName));
     }
 
     protected override async Task<GeneratedFile> GenerateFile(NextJsTransformData data, string filePathIncludingTokens)
@@ -57,7 +58,7 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
         return $"{rootFolder}{Path.DirectorySeparatorChar}{variantName}";
     }
 
-    private async Task<Dictionary<string, string>?> GetTestJson(Umbraco.Cms.Core.Models.IContent? pageToCreateTestDataFrom)
+    private async Task<Dictionary<string, string>?> GetTestJson(Umbraco.Cms.Core.Models.IContent? pageToCreateTestDataFrom, string? variantName)
     {
         var defaultValue = new Dictionary<string, string> { { "testData", "{ /* Fill in props with some test data */ }" } };
 
@@ -66,7 +67,8 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
             return defaultValue;
         }
 
-        var testData = await _partialTestDataGenerator.GeneratePageJson(pageToCreateTestDataFrom.Key);
+        var isEntirePage = VariantNamesThatTestWithAllPageData.Contains(variantName);
+        var testData = await _partialTestDataGenerator.GeneratePageJson(pageToCreateTestDataFrom.Key, isEntirePage);
         return testData != null ? new Dictionary<string, string> { { testData.Value.Key, testData.Value.Value } } : defaultValue;
     }
 }
