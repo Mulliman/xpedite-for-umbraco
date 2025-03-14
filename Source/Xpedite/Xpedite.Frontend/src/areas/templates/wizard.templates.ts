@@ -28,7 +28,15 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
   _selectedFields: Array<string> = [];
 
   @state()
+  _options:
+    | {
+        testItem?: string;
+      }
+    | undefined;
+
   _checks: Array<CheckResult> | undefined;
+
+  // #region Construction and deconstruction
 
   constructor() {
     super();
@@ -56,32 +64,32 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
 
   override disconnectedCallback() {
     super.disconnectedCallback();
-    
+
     this.#context?.clearApiModel();
     this.#assistantContext?.clearApiModel();
   }
 
-  #createApiModel() {
-    if (!this._chosenContentType || !this._selectedFields?.length) {
-      return;
-    }
+  // #endregion
 
-    const data = {
-      documentTypeId: this._chosenContentType,
-      selectedProperties: this._selectedFields,
-    } as GenerateApiModel;
+  // #region Content Type
 
-    return data;
+  #renderChooseDocumentTypeStep() {
+    return html`
+      <uui-box>
+        <div slot="headline">Choose existing Document Type</div>
+
+        <umb-input-document-type
+          .documentTypesOnly=${true}
+          .selection=${this._chosenContentType ? [this._chosenContentType] : []}
+          max="1"
+          min="1"
+          @change=${this.#onSelectContentType}
+        ></umb-input-document-type>
+      </uui-box>
+    `;
   }
 
-  #resetState() {
-    this._chosenContentType = undefined;
-    this._selectedFields = [];
-    this.#context?.clearApiModel();
-    this.#assistantContext?.clearApiModel();
-  }
-
-  async #selectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
+  async #onSelectContentType(event: CustomEvent & { target: UmbInputDocumentTypeElement }) {
     const selectedType = event.target.selection[0];
 
     if (selectedType) {
@@ -97,32 +105,9 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
   }
 
-  #selectFields(event: CustomEvent) {
-    const fieldPicker = event.target as XpediteFieldPicker;
-    this._selectedFields = fieldPicker.value;
+  // #endregion
 
-    const newModel = this.#createApiModel();
-
-    if (newModel) {
-      this.#context?.updateApiModel(newModel);
-    }
-  }
-
-  #renderChooseDocumentTypeStep() {
-    return html`
-      <uui-box>
-        <div slot="headline">Choose existing Document Type</div>
-
-        <umb-input-document-type
-          .documentTypesOnly=${true}
-          .selection=${this._chosenContentType ? [this._chosenContentType] : []}
-          max="1"
-          min="1"
-          @change=${this.#selectContentType}
-        ></umb-input-document-type>
-      </uui-box>
-    `;
-  }
+  // #region Selected Fields
 
   #renderChooseFieldsStep() {
     if (!this._chosenContentType) return null;
@@ -130,12 +115,58 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     return html`
       <uui-box>
         <div slot="headline">Choose fields</div>
-        <xpedite-field-picker @change=${this.#selectFields} .documentTypeId=${this!._chosenContentType}></xpedite-field-picker>
+        <xpedite-field-picker @change=${this.#onSelectFields} .documentTypeId=${this!._chosenContentType}></xpedite-field-picker>
       </uui-box>
     `;
   }
 
-  async #handleAction(actionName: string) {
+  #onSelectFields(event: CustomEvent) {
+    const fieldPicker = event.target as XpediteFieldPicker;
+    this._selectedFields = fieldPicker.value;
+
+    this.#refreshApiModel();
+  }
+
+  // #endregion
+
+  // #region Options
+
+  #renderOptionsStep() {
+    if (!this._chosenContentType) return null;
+
+    return html`
+      <div class="card-gap">
+        <uui-box headline="Options">
+          <umb-property-layout label="Test Item" orientation="vertical">
+            <div id="editor" slot="editor">
+              <umb-input-document
+                .selection=${this._options?.testItem ? [this._options?.testItem] : []}
+                max="1"
+                @change=${(e: CustomEvent & { target: any }) => this.#setOptionsValue("testItem", e.target.selection?.at(0))}
+              ></umb-input-document>
+            </div>
+          </umb-property-layout>
+        </uui-box>
+      </div>
+    `;
+  }
+
+  #setOptionsValue(propertyName: string, propertyValue: any) {
+    this._options = {
+      ...this._options,
+      [propertyName]: propertyValue,
+    };
+
+    this.dispatchEvent(new UmbPropertyValueChangeEvent());
+
+    this.#refreshApiModel();
+  }
+
+  // #endregion
+
+  // #region Assistant
+
+  async #onHandleAction(actionName: string) {
     if (this.#assistantContext) {
       await this.#assistantContext.runAction(actionName);
 
@@ -150,11 +181,50 @@ export class XpediteTemplatesWizard extends UmbElementMixin(LitElement) {
     }
   }
 
+  // #endregion
+
+  // #region Update Generated Code
+
+  #refreshApiModel() {
+    const newModel = this.#createApiModel();
+
+    if (newModel) {
+      this.#context?.updateApiModel(newModel);
+    }
+  }
+
+  #createApiModel() {
+    if (!this._chosenContentType || !this._selectedFields?.length) {
+      return;
+    }
+
+    const data = {
+      documentTypeId: this._chosenContentType,
+      selectedProperties: this._selectedFields,
+      testItem: this._options?.testItem,
+    } as GenerateApiModel;
+
+    return data;
+  }
+
+  #resetState() {
+    this._chosenContentType = undefined;
+    this._selectedFields = [];
+    this.#context?.clearApiModel();
+    this.#assistantContext?.clearApiModel();
+  }
+
+  // #endregion
+
   render() {
     return html`
       <div>
-        <xpedite-assistant title="Templates Assistant" .checks=${this._checks} @runAction=${(e: CustomEvent) => this.#handleAction(e.detail)}></xpedite-assistant>
-        ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()}
+        <xpedite-assistant
+          title="Templates Assistant"
+          .checks=${this._checks}
+          @runAction=${(e: CustomEvent) => this.#onHandleAction(e.detail)}
+        ></xpedite-assistant>
+        ${this.#renderChooseDocumentTypeStep()} ${this.#renderChooseFieldsStep()} ${this.#renderOptionsStep()}
       </div>
     `;
   }

@@ -20,16 +20,18 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
   _chosenContentType: string | undefined;
 
   @state()
+  _selectedFields: Array<string> = [];
+
+  @state()
   _options:
     | {
         name: string;
-        createComponentPage: boolean;
         variant?: string;
+        testItem?: string;
       }
     | undefined;
 
-  @state()
-  _selectedFields: Array<string> = [];
+
 
   constructor() {
     super();
@@ -55,6 +57,7 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
       selectedProperties: this._selectedFields,
       componentName: this._options?.name,
       variantName: this._options?.variant,
+      testItem: this._options?.testItem,
     } as GenerateApiModel;
 
     return data;
@@ -82,7 +85,7 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
     this._options = {
       ...this._options,
       [propertyName]: propertyValue,
-    } as { name: string; createComponentPage: boolean };
+    } as { name: string; };
 
     this.dispatchEvent(new UmbPropertyValueChangeEvent());
 
@@ -130,6 +133,15 @@ export class XpeditePartialsWizard extends UmbElementMixin(LitElement) {
             <div id="editor" slot="editor">
               <uui-toggle .checked=${this._options?.variant == "includingPageData"} @change=${(e: UUIBooleanInputEvent) => this.#onVariantChange(e)}>
               </uui-toggle>
+            </div>
+          </umb-property-layout>
+
+          <umb-property-layout label="Test Item" orientation="vertical">
+            <div id="editor" slot="editor">
+            <umb-input-document
+              .selection=${(this._options?.testItem ? [this._options?.testItem] : [])}
+              max=1
+              @change=${(e: CustomEvent & { target: any }) => this.#setOptionsValue("testItem", e.target.selection?.at(0))}></umb-input-document>
             </div>
           </umb-property-layout>
         </uui-box>

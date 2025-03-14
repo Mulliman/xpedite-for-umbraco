@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Api.Common.Attributes;
 using Umbraco.Cms.Api.Common.Filters;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.Authorization;
+using Xpedite.Backend.Assistant.Documentation;
 using Xpedite.Backend.Codebase;
 using Xpedite.Backend.InputMappers;
 using Xpedite.Backend.Models;
 using Xpedite.Generator;
 using Xpedite.Generator.NextJs;
+using Xpedite.Generator.TestData;
 
 namespace Xpedite.Backend.Controllers;
 
@@ -26,15 +29,24 @@ public class GeneratePartialController : Controller
     private readonly NextJsPartialGenerator _generator;
     private readonly PartialMapper _templateMapper;
     private readonly CodebaseUpdater _codebaseUpdater;
+    private readonly DocumentationPageFinder _documentationPageFinder;
+    private readonly IContentService _contentService;
 
-    public GeneratePartialController(XpediteSettings settings, PartialMapper templateMapper, CodebaseUpdater codebaseUpdater)
+    public GeneratePartialController(XpediteSettings settings,
+        PartialMapper templateMapper,
+        CodebaseUpdater codebaseUpdater,
+        PartialTestDataGenerator partialTestDataGenerator,
+        DocumentationPageFinder documentationPageFinder,
+        IContentService contentService)
     {
         _settings = settings;
         _templateMapper = templateMapper;
         _codebaseUpdater = codebaseUpdater;
+        _documentationPageFinder = documentationPageFinder;
+        _contentService = contentService;
 
         var fieldRenderer = new FileBasedFieldRenderer(_settings.TemplatesRootFolderPath);
-        _generator = new NextJsPartialGenerator(settings.TemplatesRootFolderPath, fieldRenderer);
+        _generator = new NextJsPartialGenerator(settings.TemplatesRootFolderPath, fieldRenderer, partialTestDataGenerator);
     }
 
     [HttpPost("generate-partial")]
@@ -71,6 +83,17 @@ public class GeneratePartialController : Controller
     private async Task<GeneratedFiles> GeneratePartialFiles(GenerateApiModel model)
     {
         var inputData = await _templateMapper.MapToNextJsInput(model);
+
+        if(model.TestItem != null)
+        {
+            var testItem = _contentService.GetById(model.TestItem.Value);
+
+            if(testItem != null)
+            {
+                inputData.PageToCreateTestDataFrom = testItem;
+            }
+        }
+
         var generatedFiles = await _generator.GenerateFiles(inputData);
 
         generatedFiles.GroupName = inputData.Name;

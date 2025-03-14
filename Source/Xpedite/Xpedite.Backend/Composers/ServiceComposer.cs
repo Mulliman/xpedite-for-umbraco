@@ -7,6 +7,7 @@ using Xpedite.Backend.Assistant.Documentation;
 using Xpedite.Backend.Codebase;
 using Xpedite.Backend.InputMappers;
 using Xpedite.Backend.Security;
+using Xpedite.Backend.TestItems;
 using Xpedite.Generator.TestData;
 
 namespace Xpedite.Backend.Composers;
@@ -31,9 +32,11 @@ public class ServiceComposer : IComposer
         builder.Services.AddScoped<BlockDocumentationAssistant>();
         builder.Services.AddScoped<BlockListAssistant>();
 
+        builder.Services.AddScoped<TestItemResolver>(); 
+        builder.Services.AddScoped<PageTestDataGenerator>(); 
+        builder.Services.AddScoped<PartialTestDataGenerator>();
+        builder.Services.AddScoped<BlockTestDataGenerator>();
 
-        builder.Services.AddScoped<PageTestDataGenerator>();
-        
 
         builder.Services.Configure<Xpedite>(builder.Config.GetSection("Xpedite"));
 

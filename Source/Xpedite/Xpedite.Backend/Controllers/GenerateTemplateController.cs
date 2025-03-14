@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Api.Common.Attributes;
 using Umbraco.Cms.Api.Common.Filters;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.Common.Authorization;
 using Xpedite.Backend.Assistant.Documentation;
 using Xpedite.Backend.Codebase;
 using Xpedite.Backend.InputMappers;
 using Xpedite.Backend.Models;
+using Xpedite.Backend.TestItems;
 using Xpedite.Generator;
 using Xpedite.Generator.NextJs;
 using Xpedite.Generator.TestData;
@@ -28,18 +30,21 @@ namespace Xpedite.Backend.Controllers
         private readonly NextJsTemplateGenerator _generator;
         private readonly TemplateMapper _templateMapper;
         private readonly CodebaseUpdater _codebaseUpdater;
-        private readonly DocumentationPageFinder _documentationPageFinder;
+        private readonly TestItemResolver _testItemResolver;
+        private readonly IContentService _contentService;
 
         public GenerateTemplateController(XpediteSettings settings,
             TemplateMapper templateMapper,
             CodebaseUpdater codebaseUpdater,
             PageTestDataGenerator pageTestDataGenerator,
-            DocumentationPageFinder documentationPageFinder)
+            TestItemResolver testItemResolver,
+            IContentService contentService)
         {
             _settings = settings;
             _templateMapper = templateMapper;
             _codebaseUpdater = codebaseUpdater;
-            _documentationPageFinder = documentationPageFinder;
+            _testItemResolver = testItemResolver;
+            _contentService = contentService;
 
             var fieldRenderer = new FileBasedFieldRenderer(_settings.TemplatesRootFolderPath);
             _generator = new NextJsTemplateGenerator(settings.TemplatesRootFolderPath, fieldRenderer, pageTestDataGenerator);
@@ -79,14 +84,8 @@ namespace Xpedite.Backend.Controllers
         {
             var inputData = await _templateMapper.MapToNextJsInput(model);
 
-            var documenationPage = await _documentationPageFinder.FindDocumentationPageForPageType(_settings.DocumentationTemplatesSubfolder,
-                _settings.DocumentationDocumentTypeAlias,
-                model.DocumentTypeId);
-
-            if(documenationPage != null)
-            {
-                inputData.PageToCreateTestDataFrom = documenationPage;
-            }
+            inputData.PageToCreateTestDataFrom = _testItemResolver.FindSpecificItem(model?.TestItem)
+                ?? await _testItemResolver.FindDocumentationPageForTemplate(model?.DocumentTypeId);
 
             var generatedFiles = await _generator.GenerateFiles(inputData);
 

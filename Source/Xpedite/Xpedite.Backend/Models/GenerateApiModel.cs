@@ -8,6 +8,8 @@ public class GenerateApiModel
 
     public Guid DocumentTypeId { get; set; }
 
+    public Guid? TestItem { get; set; }
+
     public IEnumerable<string> SelectedProperties { get; set; } = [];
 }
 

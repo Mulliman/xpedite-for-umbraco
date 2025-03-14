@@ -53,6 +53,7 @@ export type GenerateApiModel = {
     componentName?: string | null;
     variantName?: string | null;
     documentTypeId: string;
+    testItem?: string | null;
     selectedProperties: Array<(string)>;
 };
 
@@ -60,6 +61,7 @@ export type GenerateBlockApiModel = {
     componentName?: string | null;
     variantName?: string | null;
     documentTypeId: string;
+    testItem?: string | null;
     selectedProperties: Array<(string)>;
     settingsTypeId?: string | null;
     selectedSettings?: Array<(string)> | null;

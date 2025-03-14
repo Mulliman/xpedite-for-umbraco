@@ -17,7 +17,7 @@ using Umbraco.Extensions;
 
 namespace Xpedite.Generator.TestData
 {
-    public class PageTestDataGenerator(IPublishedContentCache publishedContentCache,
+    public class BlockTestDataGenerator(IPublishedContentCache publishedContentCache,
         IApiContentResponseBuilder apiContentResponseBuilder)
     {
         private readonly IPublishedContentCache _publishedContentCache = publishedContentCache;
@@ -72,5 +72,3 @@ namespace Xpedite.Generator.TestData
         }
     }
 }
-
-// RequestContextOutputExpansionStrategyV2
