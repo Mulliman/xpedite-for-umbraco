@@ -53,7 +53,7 @@ namespace Xpedite.Backend.Assistant.Documentation
             var documentationPageType = ContentTypeService.Get(Settings.DocumentationDocumentTypeAlias);
             var contentType = ContentTypeService.Get(documentTypeId);
 
-            var isMissingAllowedChild = documentationPageType?.AllowedContentTypes?.Any(ct => contentType?.Key == ct.Key) == false;
+            var isMissingAllowedChild = contentType?.IsElement == false && documentationPageType?.AllowedContentTypes?.Any(ct => contentType?.Key == ct.Key) == false;
 
             if (documentationPageType == null || contentType == null || isMissingAllowedChild)
             {
