@@ -28,13 +28,4 @@ it('contains expected element example ({{test.key}})', async () => {
     expect(container!.innerHTML).toContain('Replace with expected data');
 });
 {{ end }}
-
-    const emptyTestData = {
-        // Fill in props with with the empty state
-    } as TypedUmbracoNode<{{name.pascal_case}}Props>;
-
-    it('renders valid output when properties are empty', () => {
-        const { container } = render(<{{ name.pascal_case }} {...emptyTestData} />);
-        expect(container.innerHTML).toContain('<div class=""></div>');
-    });
 });

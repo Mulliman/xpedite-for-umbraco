@@ -1,0 +1,13 @@
+import React from 'react';
+import { act, render } from '@testing-library/react';
+import {{ name.pascal_case }}, {{"{"}} {{ name.pascal_case }}Props  {{"}"}} from '../{{ name.pascal_case }}';
+
+describe('{{ name.pascal_case }}', () => {
+    const emptyTestData = {
+        // Fill in props with with the empty state
+    } as {{name.pascal_case}}Props;
+
+    it('renders valid output when properties are empty', () => {
+        expect(() => render(<{{ name.pascal_case }} {...emptyTestData} />)).not.toThrow();
+    });
+});

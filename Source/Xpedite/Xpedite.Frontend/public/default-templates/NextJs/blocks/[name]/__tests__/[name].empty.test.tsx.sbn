@@ -1,0 +1,18 @@
+import React from 'react';
+import { act, render } from '@testing-library/react';
+import { Block } from "@/umbraco/types";
+import {{ name.pascal_case }}, {{"{"}} {{ name.pascal_case }}ContentProps, {{ name.pascal_case }}SettingsProps  {{"}"}} from '../{{ name.pascal_case }}';
+
+describe('{{ name.pascal_case }}', () => {
+    const emptyTestData = {
+        // Fill in props with with the empty state
+        content: {
+        },
+        settings: {
+        }
+    } as Block<{{name.pascal_case}}ContentProps,{{name.pascal_case}}SettingsProps>;
+
+    it('renders valid output when properties are empty', () => {
+        expect(() => render(<{{ name.pascal_case }} {{"{"}}...emptyTestData{{"}"}} />)).not.toThrow();
+    });
+});
