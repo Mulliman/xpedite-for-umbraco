@@ -16,7 +16,7 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
             input.Properties, 
             [.. renderedFields], 
             input.VariantName,
-            await GetTestJson(input.PageToCreateTestDataFrom, input.VariantName));
+            await GetTestJson(input.PageToCreateTestDataFrom, input.VariantName, input.Properties?.Select(p => p?.Alias)));
     }
 
     protected override async Task<GeneratedFile> GenerateFile(NextJsTransformData data, string filePathIncludingTokens)
@@ -58,7 +58,7 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
         return $"{rootFolder}{Path.DirectorySeparatorChar}{variantName}";
     }
 
-    private async Task<Dictionary<string, string>?> GetTestJson(Umbraco.Cms.Core.Models.IContent? pageToCreateTestDataFrom, string? variantName)
+    private async Task<Dictionary<string, string>?> GetTestJson(Umbraco.Cms.Core.Models.IContent? pageToCreateTestDataFrom, string? variantName, IEnumerable<string?>? propertyAliases)
     {
         var defaultValue = new Dictionary<string, string> { { "testData", "{ /* Fill in props with some test data */ }" } };
 
@@ -68,7 +68,7 @@ public class NextJsPartialGenerator(string rootDirectory, IFieldRenderer fieldRe
         }
 
         var isEntirePage = VariantNamesThatTestWithAllPageData.Contains(variantName);
-        var testData = await _partialTestDataGenerator.GeneratePageJson(pageToCreateTestDataFrom.Key, isEntirePage);
+        var testData = await _partialTestDataGenerator.GeneratePageJson(pageToCreateTestDataFrom.Key, isEntirePage, propertyAliases);
         return testData != null ? new Dictionary<string, string> { { testData.Value.Key, testData.Value.Value } } : defaultValue;
     }
 }

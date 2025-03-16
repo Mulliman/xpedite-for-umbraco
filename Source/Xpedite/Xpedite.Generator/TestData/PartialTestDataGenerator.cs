@@ -27,7 +27,7 @@ namespace Xpedite.Generator.TestData
         private readonly IApiContentResponseBuilder _apiContentResponseBuilder = apiContentResponseBuilder;
         private readonly IApiPropertyRenderer _propertyRenderer = propertyRenderer;
 
-        public async Task<KeyValuePair<string, string>?> GeneratePageJson(Guid id, bool isEntirePage)
+        public async Task<KeyValuePair<string, string>?> GeneratePageJson(Guid id, bool isEntirePage, IEnumerable<string?>? propertyAliases)
         {
             var contentItem = await _publishedContentCache.GetByIdAsync(id, true);
 
@@ -36,7 +36,7 @@ namespace Xpedite.Generator.TestData
                 return null;
             }
 
-            return isEntirePage ? GeneratePageJson(contentItem) : GeneratePartialJson(contentItem);
+            return isEntirePage ? GeneratePageJson(contentItem) : GeneratePartialJson(contentItem, propertyAliases);
         }
 
         private KeyValuePair<string, string>? GeneratePageJson(IPublishedContent? contentItem)
@@ -63,9 +63,15 @@ namespace Xpedite.Generator.TestData
             return new KeyValuePair<string, string>($"{variableName.Value}TestData", json);
         }
 
-        private KeyValuePair<string, string>? GeneratePartialJson(IPublishedContent? contentItem)
+        private KeyValuePair<string, string>? GeneratePartialJson(IPublishedContent contentItem, IEnumerable<string?>? propertyAliases)
         {
-            var dictionary = MapProperties(contentItem.Properties);
+            if(contentItem == null) { return null; }
+
+            var propertiesToMap = propertyAliases?.Any() == true
+                ? contentItem.Properties?.Where(p => propertyAliases?.Contains(p.Alias) == true)
+                : contentItem.Properties;
+
+            var dictionary = MapProperties(propertiesToMap);
 
             var jsonSerializerOptions = new JsonSerializerOptions
             {
@@ -82,9 +88,15 @@ namespace Xpedite.Generator.TestData
             return new KeyValuePair<string, string>($"{variableName.Value}TestData", json);
         }
 
-        private IDictionary<string, object?> MapProperties(IEnumerable<IPublishedProperty> properties)
+        private IDictionary<string, object?> MapProperties(IEnumerable<IPublishedProperty>? properties)
         {
             var result = new Dictionary<string, object?>();
+
+            if(properties == null)
+            {
+                return result;
+            }
+
             foreach (IPublishedProperty property in properties)
             {
                 result[property.Alias] = _propertyRenderer.GetPropertyValue(property, true);
